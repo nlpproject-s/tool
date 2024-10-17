@@ -1,188 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: HomeScreen(),
-//     );
-//   }
-// }
-
-// class HomeScreen extends StatelessWidget {
-//   final List<Map<String, String>> kuralData = [
-//     {"title": "பாயிரம்", "subtitle": "அதிகாரம் 1–4", "image": "assets/1.png"},
-//     {
-//       "title": "இல்லறவியல்",
-//       "subtitle": "அதிகாரம் 5–24",
-//       "image": "assets/1.png"
-//     },
-//     {
-//       "title": "துறவறவியல்",
-//       "subtitle": "அதிகாரம் 25–38",
-//       "image": "assets/1.png"
-//     },
-//     {"title": "அரசியல்", "subtitle": "அதிகாரம் 39–63", "image": "assets/1.png"},
-//     {
-//       "title": "அமைச்சியல்",
-//       "subtitle": "அதிகாரம் 64–95",
-//       "image": "assets/1.png"
-//     },
-//     {
-//       "title": "ஒழிபியல்",
-//       "subtitle": "அதிகாரம் 96–108",
-//       "image": "assets/1.png"
-//     },
-//     {
-//       "title": "காண்டாமறிவியல்",
-//       "subtitle": "அதிகாரம் 109",
-//       "image": "assets/1.png"
-//     },
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         toolbarHeight: 60,
-//         backgroundColor: Colors.orangeAccent,
-//         elevation: 0,
-//         title: Padding(
-//           padding: const EdgeInsets.symmetric(vertical: 20.0),
-//           child: Text(
-//             'Master Thirukkural with in-depth word-by-word insights.',
-//             style: TextStyle(
-//               color: Colors.black87,
-//               fontWeight: FontWeight.bold,
-//               fontSize: 16,
-//             ),
-//           ),
-//         ),
-//         centerTitle: true,
-//       ),
-//       body: Column(
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.all(16.0),
-//             child: Row(
-//               children: [
-//                 Expanded(
-//                   child: TextField(
-//                     decoration: InputDecoration(
-//                       prefixIcon: Icon(Icons.search),
-//                       hintText: 'Which Kural would you like to explore?',
-//                       border: OutlineInputBorder(
-//                         borderRadius: BorderRadius.circular(10),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           Container(
-//             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-//             alignment: Alignment.centerLeft,
-//             child: TextButton(
-//               onPressed: () {},
-//               style: TextButton.styleFrom(
-//                 backgroundColor: Colors.orangeAccent,
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(10),
-//                 ),
-//               ),
-//               child: Text(
-//                 'அதிகாரங்கள்',
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 16,
-//                 ),
-//               ),
-//             ),
-//           ),
-//           Expanded(
-//             child: Padding(
-//               padding: const EdgeInsets.all(16.0),
-//               child: GridView.builder(
-//                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                   crossAxisCount: 2,
-//                   childAspectRatio: 1.5,
-//                   crossAxisSpacing: 10,
-//                   mainAxisSpacing: 10,
-//                 ),
-//                 itemCount: kuralData.length,
-//                 itemBuilder: (context, index) {
-//                   return Card(
-//                     elevation: 3,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     child: Column(
-//                       children: [
-//                         Expanded(
-//                           child: ClipRRect(
-//                             borderRadius: BorderRadius.circular(10),
-//                             child: Image.asset(
-//                               kuralData[index]['image']!,
-//                               fit: BoxFit.cover,
-//                             ),
-//                           ),
-//                         ),
-//                         Padding(
-//                           padding: const EdgeInsets.all(8.0),
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Text(
-//                                 kuralData[index]['title']!,
-//                                 style: TextStyle(
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                               SizedBox(height: 4),
-//                               Text(kuralData[index]['subtitle']!),
-//                             ],
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   );
-//                 },
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//       bottomNavigationBar: BottomNavigationBar(
-//         currentIndex: 0,
-//         selectedItemColor: Colors.orange,
-//         items: [
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.home),
-//             label: 'Home',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.chat),
-//             label: 'Chat',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.favorite),
-//             label: 'Favorites',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.account_circle),
-//             label: 'Profile',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 
 void main() {
@@ -205,7 +20,6 @@ class ThirukkuralHome extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Gradient effect over the image in the top
           Positioned(
             top: 0,
             left: 0,
@@ -268,7 +82,6 @@ class ThirukkuralHome extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
-                // Search bar
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
@@ -307,7 +120,6 @@ class ThirukkuralHome extends StatelessWidget {
             right: 0,
             child: Column(
               children: [
-                // "அதிகாரங்கள்" section
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
@@ -327,11 +139,10 @@ class ThirukkuralHome extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                // Grid of images with titles
                 GridView.builder(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   shrinkWrap: true,
-                  itemCount: 8, // You can adjust the count as per your data
+                  itemCount: 8,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
@@ -340,8 +151,7 @@ class ThirukkuralHome extends StatelessWidget {
                   ),
                   itemBuilder: (context, index) {
                     return ThirukkuralCard(
-                      imagePath:
-                          'assets/adhigaram_${index + 1}.png', // Placeholder image paths
+                      imagePath: 'assets/adhigaram_${index + 1}.png',
                       title:
                           'குறள் ${(index + 1) * 10 - 9} - ${(index + 1) * 10}',
                       subTitle: 'அதிகாரம் ${index + 1}',
