@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thirukkuraltool/pages/discussion/discussion.dart';
@@ -16,18 +18,25 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   String _username = '';
 
-  final List<Widget> _pages = [
-    ThirukkuralHome(),
-    LikePage(),
-    Discussion(),
-    QueryContentGen(),
-    Profile()
-  ];
+  void updateState(Function(BuildContext) updateFunction) {
+    setState(() {
+      updateFunction(context);
+    });
+  }
+
+  late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _pages = [
+      ThirukkuralHome(),
+      LikePage(),
+      Discussion(),
+      QueryContentGen(),
+      Profile()
+    ];
   }
 
   Future<void> _loadUserData() async {
@@ -43,8 +52,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _signOut(BuildContext context) async {
     try {
       await _auth.signOut();
-      Navigator.of(context)
-          .pushReplacementNamed('/signin'); // Adjust the route if needed
+      Navigator.of(context).pushReplacementNamed('/signin');
     } catch (e) {
       print('Error signing out: $e');
     }
@@ -64,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage('assets/user_avatar.png'),
+              backgroundImage: AssetImage('assets/vector.png'),
             ),
             SizedBox(width: 10),
             Text(_username.isNotEmpty ? _username : 'User',
@@ -72,12 +80,13 @@ class _HomePageState extends State<HomePage> {
                   color: Color.fromARGB(255, 228, 228, 239),
                 )),
             Spacer(),
-            // Row(
-            //   children: [
-            //     Icon(Icons.star, color: Colors.yellow),
-            //     Text("0", style: TextStyle(fontSize: 18)),
-            //   ],
-            // ),
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onPressed: () => nullptr,
+            ),
             IconButton(
               icon: Icon(
                 Icons.logout,
@@ -90,6 +99,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -111,7 +121,7 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: const Color.fromARGB(255, 26, 83, 25),
+        selectedItemColor: const Color.fromARGB(255, 0, 50, 133),
         unselectedItemColor: Colors.grey,
       ),
     );
@@ -222,6 +232,7 @@ class ThirukkuralHome extends StatelessWidget {
             top: 220,
             left: 0,
             right: 0,
+            bottom: 0,
             child: Column(
               children: [
                 Padding(
@@ -241,28 +252,53 @@ class ThirukkuralHome extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  shrinkWrap: true,
-                  itemCount: 8,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 1.2,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 25,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 1.2,
+                        ),
+                        itemBuilder: (context, index) {
+                          return ThirukkuralCard(
+                            imagePath: 'assets/adhigaram_${index + 1}.png',
+                            title:
+                                'குறள் ${(index + 1) * 10 - 9}-${(index + 1) * 10}',
+                            subTitle: 'அதிகாரம் ${index + 1}',
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                  itemBuilder: (context, index) {
-                    return ThirukkuralCard(
-                      imagePath: 'assets/adhigaram_${index + 1}.png',
-                      title:
-                          'குறள் ${(index + 1) * 10 - 9}-${(index + 1) * 10}',
-                      subTitle: 'அதிகாரம் ${index + 1}',
-                    );
-                  },
                 ),
               ],
             ),
           ),
+          // Positioned(
+          //   bottom: 0,
+          //   left: 0,
+          //   right: 0,
+          //   child: Container(
+          //     height: 70,
+          //     decoration: BoxDecoration(
+          //       gradient: LinearGradient(
+          //         colors: [
+          //           Color.fromARGB(255, 171, 237, 165).withOpacity(0.8),
+          //           Colors.transparent,
+          //         ],
+          //         begin: Alignment.bottomCenter,
+          //         end: Alignment.topCenter,
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -285,7 +321,6 @@ class ThirukkuralCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to KuralPage and pass the required data
         Navigator.push(
           context,
           MaterialPageRoute(
