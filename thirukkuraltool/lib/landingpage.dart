@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 20, 10, 163),
+        backgroundColor: Color.fromARGB(255, 237, 160, 96),
         title: Row(
           children: [
             CircleAvatar(
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.teal,
+        selectedItemColor: const Color.fromARGB(255, 26, 83, 25),
         unselectedItemColor: Colors.grey,
       ),
     );

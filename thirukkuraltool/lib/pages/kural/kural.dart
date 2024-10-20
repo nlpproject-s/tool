@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Add Firestore package
 
 class KuralPage extends StatefulWidget {
@@ -92,13 +91,48 @@ class _KuralPageState extends State<KuralPage> {
                   : ListView.builder(
                       itemCount: kurals.length,
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Text(
-                            '${index + 1}. ${kurals[index]}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey[700],
+                        // Each kural is displayed in a styled card
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 15.0),
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '${index + 1}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color.fromARGB(
+                                          221, 58, 109, 140),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  '${kurals[index].split('\$')[0]}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    // fontWeight: FontWeight.bold,
+                                    color: const Color.fromARGB(221, 9, 16, 87),
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  kurals[index].split('\$')[1],
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: const Color.fromARGB(221, 9, 16, 87),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         );
