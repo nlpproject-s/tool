@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Discussion extends StatefulWidget {
+class QueryContentGen extends StatefulWidget {
   @override
-  _Discussion createState() => _Discussion();
+  _QueryContentGen createState() => _QueryContentGen();
 }
 
-class _Discussion extends State<Discussion> {
+class _QueryContentGen extends State<QueryContentGen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   int _selectedIndex = 0;
   String _username = '';

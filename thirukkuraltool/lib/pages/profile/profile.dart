@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Discussion extends StatefulWidget {
+class Profile extends StatefulWidget {
   @override
-  _Discussion createState() => _Discussion();
+  _Profile createState() => _Profile();
 }
 
-class _Discussion extends State<Discussion> {
+class _Profile extends State<Profile> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   int _selectedIndex = 0;
   String _username = '';

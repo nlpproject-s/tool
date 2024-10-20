@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Discussion extends StatefulWidget {
+class LikePage extends StatefulWidget {
   @override
-  _Discussion createState() => _Discussion();
+  _LikePage createState() => _LikePage();
 }
 
-class _Discussion extends State<Discussion> {
+class _LikePage extends State<LikePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   int _selectedIndex = 0;
   String _username = '';

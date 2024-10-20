@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "495933590247",
+    "project_id": "tool-25c8a",
+    "storage_bucket": "tool-25c8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495933590247:android:581e206e1ec0cb2dcb3042",
+        "android_client_info": {
+          "package_name": "com.example.thirukkuraltool"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4hETM5qneM7X460pmOhgGchBjyg4ynuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
