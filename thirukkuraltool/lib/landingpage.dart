@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thirukkuraltool/pages/discussion/discussion.dart';
+import 'package:thirukkuraltool/pages/kural/kural.dart';
 import 'package:thirukkuraltool/pages/like/likepage.dart';
 import 'package:thirukkuraltool/pages/profile/profile.dart';
 import 'package:thirukkuraltool/pages/query_content_gen/querycontentgen.dart';
@@ -254,7 +255,7 @@ class ThirukkuralHome extends StatelessWidget {
                     return ThirukkuralCard(
                       imagePath: 'assets/adhigaram_${index + 1}.png',
                       title:
-                          'குறள் ${(index + 1) * 10 - 9} - ${(index + 1) * 10}',
+                          'குறள் ${(index + 1) * 10 - 9}-${(index + 1) * 10}',
                       subTitle: 'அதிகாரம் ${index + 1}',
                     );
                   },
@@ -282,54 +283,69 @@ class ThirukkuralCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
+    return GestureDetector(
+      onTap: () {
+        // Navigate to KuralPage and pass the required data
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => KuralPage(
+              imagePath: imagePath,
+              title: title,
+              subTitle: subTitle,
+            ),
           ),
-        ],
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
-      ),
+        );
+      },
       child: Container(
-        padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          gradient: LinearGradient(
-            colors: [
-              Colors.black.withOpacity(0.6),
-              Colors.transparent,
-            ],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Spacer(),
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              subTitle,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 14,
-              ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
             ),
           ],
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            gradient: LinearGradient(
+              colors: [
+                Colors.black.withOpacity(0.6),
+                Colors.transparent,
+              ],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Spacer(),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                subTitle,
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
