@@ -29,10 +29,10 @@ class _SignInPageState extends State<SignInPage> {
             height: height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/valluvar1.png'),
+                image: AssetImage('assets/thiruvalluvar.png'),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.3),
+                  Colors.black.withOpacity(0.1),
                   BlendMode.darken,
                 ),
               ),
@@ -49,9 +49,8 @@ class _SignInPageState extends State<SignInPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                      height: height * 0.1), // Adds spacing to adjust content
-                  // Heading
+                  SizedBox(height: height * 0.1),
+
                   Text(
                     'Sign in',
                     style: TextStyle(
@@ -145,11 +144,11 @@ class _SignInPageState extends State<SignInPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
-                      backgroundColor: Colors.purpleAccent,
+                      backgroundColor: Color.fromARGB(255, 83, 100, 147),
                     ),
                     child: const Text(
                       'Sign in',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),

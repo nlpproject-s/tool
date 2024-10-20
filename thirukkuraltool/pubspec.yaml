@@ -69,6 +69,10 @@ flutter:
     - assets/valluvar1.png
     - assets/valluvar2.png
     - assets/google.png
+    - assets/tamil.png
+    - assets/tamil_1.png
+    - assets/vector.png
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
