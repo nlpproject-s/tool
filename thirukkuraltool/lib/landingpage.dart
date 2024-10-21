@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thirukkuraltool/pages/discussion/discussion.dart';
@@ -17,13 +15,6 @@ class _HomePageState extends State<HomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   int _selectedIndex = 0;
   String _username = '';
-
-  void updateState(Function(BuildContext) updateFunction) {
-    setState(() {
-      updateFunction(context);
-    });
-  }
-
   late List<Widget> _pages;
 
   @override
@@ -31,12 +22,32 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _loadUserData();
     _pages = [
-      ThirukkuralHome(),
+      ThirukkuralHome(
+        onPressed: (context, imagePath, title, subTitle) {
+          print('hello everyone');
+          updatestate(imagePath, title, subTitle);
+        },
+      ),
       LikePage(),
       Discussion(),
       QueryContentGen(),
-      Profile()
+      Profile(),
+      KuralPage(
+          imagePath: "adhigaram_1.png",
+          title: 'குறள் 1-10',
+          subTitle: 'அதிகாரம் 1'),
     ];
+  }
+
+  void updatestate(String imagePath, String title, String subTitle) {
+    setState(() {
+      _pages[5] = KuralPage(
+        imagePath: imagePath,
+        title: title,
+        subTitle: subTitle,
+      );
+      _selectedIndex = 5;
+    });
   }
 
   Future<void> _loadUserData() async {
@@ -44,7 +55,7 @@ class _HomePageState extends State<HomePage> {
     if (user != null) {
       String email = user.email ?? '';
       setState(() {
-        _username = email.split('@')[0]; // Extract the part before '@'
+        _username = email.split('@')[0];
       });
     }
   }
@@ -85,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                 Icons.settings,
                 color: Colors.white,
               ),
-              onPressed: () => nullptr,
+              onPressed: () => _signOut(context),
             ),
             IconButton(
               icon: Icon(
@@ -113,10 +124,17 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.favorite),
             label: 'Favorites',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'search'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'search',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.auto_stories),
+            label: 'kural',
           ),
         ],
         currentIndex: _selectedIndex,
@@ -129,6 +147,18 @@ class _HomePageState extends State<HomePage> {
 }
 
 class ThirukkuralHome extends StatelessWidget {
+  final Function(
+    BuildContext context,
+    String imagePath,
+    String title,
+    String titleSubTitle,
+  ) onPressed;
+
+  const ThirukkuralHome({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -268,11 +298,11 @@ class ThirukkuralHome extends StatelessWidget {
                         ),
                         itemBuilder: (context, index) {
                           return ThirukkuralCard(
-                            imagePath: 'assets/adhigaram_${index + 1}.png',
-                            title:
-                                'குறள் ${(index + 1) * 10 - 9}-${(index + 1) * 10}',
-                            subTitle: 'அதிகாரம் ${index + 1}',
-                          );
+                              imagePath: 'assets/adhigaram_${index + 1}.png',
+                              title:
+                                  'குறள் ${(index + 1) * 10 - 9}-${(index + 1) * 10}',
+                              subTitle: 'அதிகாரம் ${index + 1}',
+                              onCardTap: onPressed);
                         },
                       ),
                     ),
@@ -281,24 +311,6 @@ class ThirukkuralHome extends StatelessWidget {
               ],
             ),
           ),
-          // Positioned(
-          //   bottom: 0,
-          //   left: 0,
-          //   right: 0,
-          //   child: Container(
-          //     height: 70,
-          //     decoration: BoxDecoration(
-          //       gradient: LinearGradient(
-          //         colors: [
-          //           Color.fromARGB(255, 171, 237, 165).withOpacity(0.8),
-          //           Colors.transparent,
-          //         ],
-          //         begin: Alignment.bottomCenter,
-          //         end: Alignment.topCenter,
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
@@ -309,27 +321,29 @@ class ThirukkuralCard extends StatelessWidget {
   final String imagePath;
   final String title;
   final String subTitle;
+  final Function(
+          BuildContext context, String imagePath, String title, String subTitle)
+      onCardTap; // More meaningful name
 
   const ThirukkuralCard({
     Key? key,
     required this.imagePath,
     required this.title,
     required this.subTitle,
+    required this.onCardTap, // Updated name
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        print('heellooo');
+
+        onCardTap(
           context,
-          MaterialPageRoute(
-            builder: (context) => KuralPage(
-              imagePath: imagePath,
-              title: title,
-              subTitle: subTitle,
-            ),
-          ),
+          imagePath,
+          title,
+          subTitle,
         );
       },
       child: Container(
