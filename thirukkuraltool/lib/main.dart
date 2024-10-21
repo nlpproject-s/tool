@@ -131,8 +131,7 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context)
-                          .pop(); 
+                      Navigator.of(context).pop();
                     },
                     child: Text(
                       "Cancel",
@@ -142,7 +141,6 @@ class _MyAppState extends State<MyApp> {
                   IconButton(
                     icon: Icon(Icons.favorite_border, color: Colors.white),
                     onPressed: () {
-                      Color:Colors.red,
                       Navigator.of(context).pop();
                     },
                   ),
