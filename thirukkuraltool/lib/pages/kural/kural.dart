@@ -107,7 +107,6 @@ class _KuralPageState extends State<KuralPage> {
   }
 }
 
-// KuralCard widget for individual kural display
 class KuralCard extends StatelessWidget {
   final int index;
   final String kuralText;
@@ -120,48 +119,110 @@ class KuralCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.8),
-          width: 2,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Kural(
+              kuralIndex: index,
+              kuralText: kuralText,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.8),
+            width: 2,
+          ),
+        ),
+        margin: const EdgeInsets.only(bottom: 15.0),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  '$index',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                kuralText.split('\$')[0],
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 2),
+              Text(
+                kuralText.split('\$')[1],
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      margin: const EdgeInsets.only(bottom: 15.0),
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
+    );
+  }
+}
+
+class Kural extends StatelessWidget {
+  final int kuralIndex;
+  final String kuralText;
+
+  const Kural({
+    Key? key,
+    required this.kuralIndex,
+    required this.kuralText,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Kural $kuralIndex'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                '$index',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            Text(
+              'Kural $kuralIndex',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 10),
             Text(
-              kuralText.split('\$')[0], // First part of the kural
+              kuralText.split('\$')[0],
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
               ),
             ),
-            SizedBox(height: 2),
+            SizedBox(height: 5),
             Text(
-              kuralText.split('\$')[1], // Second part of the kural
+              kuralText.split('\$')[1],
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
               ),
             ),
           ],
