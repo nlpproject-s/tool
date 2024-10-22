@@ -259,26 +259,38 @@ class ThirukkuralHome extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 220,
+            top: MediaQuery.of(context).size.height * 0.27,
             left: 0,
             right: 0,
             bottom: 0,
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "அதிகாரங்கள்",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.height * 0.05,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(25),
                         ),
-                      ),
-                    ],
+                        child: Center(
+                          child: Text(
+                            'Standard ${index + 1}',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(height: 10),
@@ -323,14 +335,14 @@ class ThirukkuralCard extends StatelessWidget {
   final String subTitle;
   final Function(
           BuildContext context, String imagePath, String title, String subTitle)
-      onCardTap; // More meaningful name
+      onCardTap;
 
   const ThirukkuralCard({
     Key? key,
     required this.imagePath,
     required this.title,
     required this.subTitle,
-    required this.onCardTap, // Updated name
+    required this.onCardTap,
   }) : super(key: key);
 
   @override

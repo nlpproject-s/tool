@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:thirukkuraltool/pages/kural/individualkural.dart';
 
 class KuralPage extends StatefulWidget {
   final String imagePath;
@@ -31,12 +32,9 @@ class _KuralPageState extends State<KuralPage> {
 
   Future<void> fetchKurals() async {
     try {
-      // Split the range from the title (e.g., 'Kural 1-10')
       List<String> range = widget.title.split(' ')[1].split('-');
       start = int.parse(range[0]);
       end = int.parse(range[1]);
-
-      // Fetch each kural from Firestore by its index (start to end)
       for (int i = start; i <= end; i++) {
         String key = i.toString();
         DocumentSnapshot<Map<String, dynamic>> snapshot =
@@ -78,7 +76,7 @@ class _KuralPageState extends State<KuralPage> {
                 image: AssetImage(widget.imagePath),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.3), // Dark overlay
+                  Colors.black.withOpacity(0.3),
                   BlendMode.darken,
                 ),
               ),
@@ -89,7 +87,7 @@ class _KuralPageState extends State<KuralPage> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: isLoading
-                  ? Center(child: CircularProgressIndicator()) // Loading state
+                  ? Center(child: CircularProgressIndicator())
                   : ListView.builder(
                       itemCount: kurals.length,
                       itemBuilder: (context, index) {
@@ -177,55 +175,6 @@ class KuralCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class Kural extends StatelessWidget {
-  final int kuralIndex;
-  final String kuralText;
-
-  const Kural({
-    Key? key,
-    required this.kuralIndex,
-    required this.kuralText,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Kural $kuralIndex'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Kural $kuralIndex',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              kuralText.split('\$')[0],
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            SizedBox(height: 5),
-            Text(
-              kuralText.split('\$')[1],
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-          ],
         ),
       ),
     );
