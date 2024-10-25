@@ -43,6 +43,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   cloud_firestore: ^5.2.1
   shared_preferences: ^2.0.9
+  flutter_tts: ^4.0.2
 
 
 
@@ -84,6 +85,9 @@ flutter:
     - assets/tamil_1.png
     - assets/vector.png
     - assets/thiruvalluvar_1.png
+    
+    - assets/board.png
+
 
 
   # The following line ensures that the Material Icons font is

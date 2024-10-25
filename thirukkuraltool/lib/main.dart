@@ -20,13 +20,13 @@ class MyApp extends StatelessWidget {
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (snapshot.hasData) {
-                _showWordOfTheDayDialog(context);
-              } else {
-                _showWordOfTheDayDialog(context);
-              }
-            });
+            // WidgetsBinding.instance.addPostFrameCallback((_) {
+            //   if (snapshot.hasData) {
+            //     _showWordOfTheDayDialog(context);
+            //   } else {
+            //     _showWordOfTheDayDialog(context);
+            //   }
+            // });
 
             if (snapshot.hasData) {
               return HomePage();

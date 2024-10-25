@@ -18,26 +18,22 @@ class _SignUpPageState extends State<SignUpPage> {
     final height = mediaQuery.size.height;
 
     return Scaffold(
-      resizeToAvoidBottomInset:
-          false, // Prevents layout shift when keyboard shows
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // Background Image with opacity
           Container(
             width: width,
             height: height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                    'assets/thiruvalluvar.png'), // Your background image
+                image: AssetImage('assets/thiruvalluvar.png'),
                 fit: BoxFit.cover,
               ),
             ),
             child: Container(
-              color: Colors.black.withOpacity(0.1), // Adjust opacity here
+              color: Colors.black.withOpacity(0.1),
             ),
           ),
-          // Page Content
           SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -48,7 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(height: height * 0.05), // Adds spacing
+                  SizedBox(height: height * 0.05),
                   // Heading
                   const Text(
                     'Sign up',
@@ -75,7 +71,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 40),
-                  // First Name and Last Name Fields
+
                   Row(
                     children: [
                       Expanded(
@@ -114,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  // Email Field
+
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
@@ -234,9 +230,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ],
                   ),
-                  SizedBox(
-                      height: mediaQuery
-                          .viewInsets.bottom), // Handles keyboard space
+                  SizedBox(height: mediaQuery.viewInsets.bottom),
                 ],
               ),
             ),
