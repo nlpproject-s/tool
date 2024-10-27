@@ -1,80 +1,3 @@
-// import 'dart:async';
-
-// import 'package:flutter/material.dart';
-
-// class Search extends StatefulWidget {
-//   const Search({Key? key}) : super(key: key);
-
-//   @override
-//   _SearchState createState() => _SearchState();
-// }
-
-// class _SearchState extends State<Search> {
-//   TextEditingController _controller = TextEditingController();
-
-//   void _onTextChanged(String text) {
-//     print("Current input: $text");
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Explore Kural"),
-//         backgroundColor: Colors.deepOrange,
-//       ),
-//       body: Container(
-//         width: double.infinity,
-//         height: double.infinity,
-//         decoration: BoxDecoration(
-//           gradient: LinearGradient(
-//             colors: [Colors.deepOrangeAccent, Colors.orangeAccent],
-//             begin: Alignment.topCenter,
-//             end: Alignment.bottomCenter,
-//           ),
-//         ),
-//         child: Center(
-//           child: Container(
-//             padding: EdgeInsets.symmetric(horizontal: 15),
-//             margin: EdgeInsets.symmetric(horizontal: 20),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(30),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: Colors.grey.withOpacity(0.4),
-//                   spreadRadius: 2,
-//                   blurRadius: 7,
-//                   offset: Offset(0, 4),
-//                 ),
-//               ],
-//             ),
-//             child: Row(
-//               children: [
-//                 Expanded(
-//                   child: TextField(
-//                     controller: _controller,
-//                     onChanged: _onTextChanged,
-//                     decoration: InputDecoration(
-//                       hintText: "Which Kural would you like to explore?",
-//                       border: InputBorder.none,
-//                     ),
-//                   ),
-//                 ),
-//                 GestureDetector(
-//                   onTap: () {
-//                     _controller.clear();
-//                   },
-//                   child: Icon(Icons.clear, color: Colors.grey),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -88,21 +11,32 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> _searchResults = [];
+  late QuerySnapshot querySnapshot;
+  List<Map<String, dynamic>> results = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchInitialData();
+  }
+
+  Future<void> fetchInitialData() async {
+    querySnapshot =
+        await FirebaseFirestore.instance.collection("TopicSearch").get();
+  }
 
   Future<void> fetchData(String topic) async {
-    final results = <Map<String, dynamic>>[];
-    final querySnapshot =
-        await FirebaseFirestore.instance.collection("TopicSearch").get();
-
+    results.clear();
     for (var doc in querySnapshot.docs) {
-      final data = doc.data();
-      final englishTopics = List<String>.from(data['doc_1']['english']);
-
-      if (englishTopics.contains(topic)) {
-        results.add({
-          'kuralNumber': data['adhigaram']['number'],
-          'title': data['adhigaram']['english'],
-        });
+      final data = doc.data() as Map<String, dynamic>;
+      final englishTopics = List<String>.from(data['topics']['english']);
+      for (var word in englishTopics) {
+        if (word.toLowerCase().startsWith(topic.toLowerCase())) {
+          results.add({
+            'kuralNumber': data['adhigaram']['number'],
+            'title': data['adhigaram']['english'],
+          });
+        }
       }
     }
 
