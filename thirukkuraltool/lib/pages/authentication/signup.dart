@@ -157,6 +157,21 @@ class _SignUpPageState extends State<SignUpPage> {
                         );
                         Navigator.pop(context);
                       } catch (e) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              content: Text(
+                                e.toString(),
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            );
+                          },
+                        );
+
                         print('Error signing up: $e');
                       }
                     },
@@ -173,7 +188,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Divider with "Or sign up with"
                   Row(
                     children: [
                       Expanded(

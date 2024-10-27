@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:thirukkuraltool/pages/discussion/discussion.dart';
 import 'package:thirukkuraltool/pages/kural/kural.dart';
 import 'package:thirukkuraltool/pages/like/likepage.dart';
 import 'package:thirukkuraltool/pages/profile/profile.dart';
 import 'package:thirukkuraltool/pages/query_content_gen/querycontentgen.dart';
+import 'package:thirukkuraltool/pages/search/search.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,9 +25,9 @@ class _HomePageState extends State<HomePage> {
     _loadUserData();
     _pages = [
       ThirukkuralHome(
-        onPressed: (context, imagePath, title, subTitle) {
+        onPressed: (context, imagePath, title, subTitle, list) {
           print('hello everyone');
-          updatestate(imagePath, title, subTitle);
+          updatestate(imagePath, title, subTitle, list);
         },
       ),
       LikePage(),
@@ -35,18 +37,23 @@ class _HomePageState extends State<HomePage> {
       KuralPage(
           imagePath: "adhigaram_1.png",
           title: 'குறள் 1-10',
-          subTitle: 'அதிகாரம் 1'),
+          subTitle: 'அதிகாரம் 1',
+          list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     ];
   }
 
-  void updatestate(String imagePath, String title, String subTitle) {
+  void updatestate(
+      String imagePath, String title, String subTitle, List<int> list) {
+    print('heeeee');
+
     setState(() {
-      _pages[5] = KuralPage(
+      _pages[4] = KuralPage(
         imagePath: imagePath,
         title: title,
         subTitle: subTitle,
+        list: list,
       );
-      _selectedIndex = 5;
+      _selectedIndex = 4;
     });
   }
 
@@ -125,10 +132,6 @@ class _HomePageState extends State<HomePage> {
             label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'search',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -152,6 +155,7 @@ class ThirukkuralHome extends StatelessWidget {
     String imagePath,
     String title,
     String titleSubTitle,
+    List<int> list,
   ) onPressed;
 
   const ThirukkuralHome({
@@ -216,7 +220,7 @@ class ThirukkuralHome extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: ' with in-depth\nword-by-word insights.',
+                        text: ' with in-depth word-by-word insights.',
                         style: TextStyle(
                           fontSize: 22,
                           color: Colors.black,
@@ -225,31 +229,45 @@ class ThirukkuralHome extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  height: 43,
+                  padding: EdgeInsets.symmetric(horizontal: 15),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    gradient: LinearGradient(
+                      colors: [Colors.orange, Colors.red],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                     borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.white,
+                    //     spreadRadius: 2,
+                    //     blurRadius: 5,
+                    //     offset: Offset(0, 3),
+                    //   ),
+                    // ],
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.search, color: Colors.grey),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: "Which Kural would you like to explore?",
-                            border: InputBorder.none,
-                          ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Search()),
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.search, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text(
+                              "Search...                   ",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -272,21 +290,39 @@ class ThirukkuralHome extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: 10,
                     itemBuilder: (context, index) {
-                      return Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Standard ${index + 1}',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
+                      return GestureDetector(
+                        onTap: () => {
+                          onPressed(context, 'assets/thiruvalluvar_1.png',
+                              'subadhigaram', 'name', [15, 20, 24, 36])
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.red, Colors.orange],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Standard ${index + 1}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                            ),
                           ),
                         ),
                       );
@@ -333,9 +369,9 @@ class ThirukkuralCard extends StatelessWidget {
   final String imagePath;
   final String title;
   final String subTitle;
-  final Function(
-          BuildContext context, String imagePath, String title, String subTitle)
-      onCardTap;
+
+  final Function(BuildContext context, String imagePath, String title,
+      String subTitle, List<int> list) onCardTap;
 
   const ThirukkuralCard({
     Key? key,
@@ -350,13 +386,14 @@ class ThirukkuralCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('heellooo');
-
-        onCardTap(
-          context,
-          imagePath,
-          title,
-          subTitle,
-        );
+        List<int> list = [
+          for (int i = int.parse(title.split(' ')[1].split('-')[0]);
+              i < int.parse(title.split(' ')[1].split('-')[0]) + 10;
+              i++)
+            i
+        ];
+        print(list);
+        onCardTap(context, imagePath, title, subTitle, list);
       },
       child: Container(
         decoration: BoxDecoration(

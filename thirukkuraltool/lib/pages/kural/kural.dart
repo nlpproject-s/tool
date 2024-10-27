@@ -6,12 +6,14 @@ class KuralPage extends StatefulWidget {
   final String imagePath;
   final String title;
   final String subTitle;
+  final List<int> list;
 
   const KuralPage({
     Key? key,
     required this.imagePath,
     required this.title,
     required this.subTitle,
+    required this.list,
   }) : super(key: key);
 
   @override
@@ -32,11 +34,11 @@ class _KuralPageState extends State<KuralPage> {
 
   Future<void> fetchKurals() async {
     try {
-      List<String> range = widget.title.split(' ')[1].split('-');
-      start = int.parse(range[0]);
-      end = int.parse(range[1]);
-      for (int i = start; i <= end; i++) {
-        String key = i.toString();
+      // List<String> range = widget.title.split(' ')[1].split('-');
+      // start = int.parse(range[0]);
+      // end = int.parse(range[1]);
+      for (int i = 0; i < widget.list.length; i++) {
+        String key = widget.list[i].toString();
         DocumentSnapshot<Map<String, dynamic>> snapshot =
             await FirebaseFirestore.instance
                 .collection('Thirukkural')
@@ -92,7 +94,7 @@ class _KuralPageState extends State<KuralPage> {
                       itemCount: kurals.length,
                       itemBuilder: (context, index) {
                         return KuralCard(
-                          index: start + index,
+                          index: widget.list[index],
                           kuralText: kurals[index],
                         );
                       },
