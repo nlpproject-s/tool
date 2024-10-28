@@ -68,41 +68,46 @@ class _KuralPageState extends State<KuralPage> {
     final height = mediaQuery.size.height;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(widget.imagePath),
-                fit: BoxFit.cover,
-                colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.3),
-                  BlendMode.darken,
-                ),
-              ),
-            ),
-          ),
-          // Content: List of Kurals in Cards
-          Positioned.fill(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      itemCount: kurals.length,
-                      itemBuilder: (context, index) {
-                        return KuralCard(
-                          index: widget.list[index],
-                          kuralText: kurals[index],
-                        );
-                      },
+      body: kurals.length == 1
+          ? Kural(
+              kuralIndex: widget.list[0],
+              kuralText: kurals[0],
+            )
+          : Stack(
+              children: [
+                Container(
+                  width: width,
+                  height: height,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(widget.imagePath),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.3),
+                        BlendMode.darken,
+                      ),
                     ),
+                  ),
+                ),
+                // Content: List of Kurals in Cards
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : ListView.builder(
+                            itemCount: kurals.length,
+                            itemBuilder: (context, index) {
+                              return KuralCard(
+                                index: widget.list[index],
+                                kuralText: kurals[index],
+                              );
+                            },
+                          ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -121,6 +126,7 @@ class KuralCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print('kural called');
         Navigator.push(
           context,
           MaterialPageRoute(

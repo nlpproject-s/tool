@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart'; // For Firestore integration
+import 'package:flutter/widgets.dart';
 
 class Kural extends StatefulWidget {
   final int kuralIndex;

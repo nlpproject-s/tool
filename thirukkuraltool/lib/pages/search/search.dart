@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:thirukkuraltool/pages/kural/individualkural.dart';
+import 'package:thirukkuraltool/pages/kural/kural.dart';
+import 'package:thirukkuraltool/pages/profile/profile.dart';
 
 class Search extends StatefulWidget {
   const Search({Key? key}) : super(key: key);
@@ -29,12 +32,13 @@ class _SearchState extends State<Search> {
     results.clear();
     for (var doc in querySnapshot.docs) {
       final data = doc.data() as Map<String, dynamic>;
-      final englishTopics = List<String>.from(data['topics']['english']);
+      final englishTopics = List<String>.from(data['topics']['english'] ?? []);
       for (var word in englishTopics) {
         if (word.toLowerCase().startsWith(topic.toLowerCase())) {
           results.add({
-            'kuralNumber': data['adhigaram']['number'],
-            'title': data['adhigaram']['english'],
+            'kuralNumber': data['adhigaram']['number']?.toString() ?? "0",
+            'title': data['adhigaram']['english'] ?? "No Title",
+            'kural': data['kural'] ?? "No Kural text available",
           });
         }
       }
@@ -101,6 +105,7 @@ class _SearchState extends State<Search> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      print('hellllo');
                       _controller.clear();
                       setState(() {
                         _searchResults = [];
@@ -112,34 +117,95 @@ class _SearchState extends State<Search> {
               ),
             ),
             Expanded(
-              child: _searchResults.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: _searchResults.length,
-                      itemBuilder: (context, index) {
-                        final result = _searchResults[index];
-                        return ListTile(
-                          title: Text(
-                            "Kural Number: ${result['kuralNumber']}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Title: ${result['title']}",
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        'No results found.',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-            ),
+                child: ListView.builder(
+              itemCount: _searchResults.length,
+              itemBuilder: (context, index) {
+                final temp = _searchResults[index];
+                return SearchResultCard(
+                  kuralNumber: temp['kuralNumber'],
+                  title: temp['title'],
+                  kural: temp['kural'],
+                );
+              },
+            )),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class SearchResultCard extends StatelessWidget {
+  final String kuralNumber;
+  final String title;
+  final String? kural;
+
+  const SearchResultCard({
+    Key? key,
+    required this.kuralNumber,
+    required this.title,
+    this.kural,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        print('\n\ninside');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            // builder: (context) => Kural(
+            //   kuralIndex: 10,
+            //   kuralText: "No Kural text available",
+            // ),
+            builder: (context) => KuralPage(
+                imagePath: "assets/orange_grad.png",
+                title: "title",
+                subTitle: "subTitle",
+                list: [int.parse(kuralNumber)]),
+          ),
+        );
+      },
+      child: Card(
+        elevation: 4,
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Kural Number: $kuralNumber",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.green,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Title: $title",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 8),
+              if (kural != null && kural!.isNotEmpty)
+                Text(
+                  "Kural: $kural",
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14,
+                    color: Colors.black54,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

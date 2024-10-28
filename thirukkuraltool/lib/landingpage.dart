@@ -30,9 +30,11 @@ class _HomePageState extends State<HomePage> {
           updatestate(imagePath, title, subTitle, list);
         },
       ),
+      Discussion(
+        currentUser: _username,
+      ),
       LikePage(),
-      Discussion(),
-      QueryContentGen(),
+      // QueryContentGen(),
       Profile(),
       KuralPage(
           imagePath: "adhigaram_1.png",
@@ -47,13 +49,13 @@ class _HomePageState extends State<HomePage> {
     print('heeeee');
 
     setState(() {
-      _pages[4] = KuralPage(
+      _pages[_pages.length - 1] = KuralPage(
         imagePath: imagePath,
         title: title,
         subTitle: subTitle,
         list: list,
       );
-      _selectedIndex = 4;
+      _selectedIndex = _pages.length - 1;
     });
   }
 
@@ -77,9 +79,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onItemTapped(int index) {
+    print(index);
     setState(() {
       _selectedIndex = index;
     });
+    print(_pages[_selectedIndex].toString());
   }
 
   @override
@@ -88,7 +92,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 237, 160, 96),
         title: Row(
-          
           children: [
             CircleAvatar(
               backgroundImage: AssetImage('assets/vector.png'),
@@ -293,7 +296,7 @@ class ThirukkuralHome extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () => {
-                          onPressed(context, 'assets/thiruvalluvar_1.png',
+                          onPressed(context, 'assets/chuvadi.png',
                               'subadhigaram', 'name', [15, 20, 24, 36])
                         },
                         child: Container(

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:thirukkuraltool/pages/kural/individualkural.dart';
+import 'package:thirukkuraltool/pages/search/search.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -28,6 +30,8 @@ class _Profile extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+        // body: Kural(kuralIndex: 3, kuralText: "kuralText".toString()),
+        );
   }
 }
