@@ -88,6 +88,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 237, 160, 96),
         title: Row(
+          
           children: [
             CircleAvatar(
               backgroundImage: AssetImage('assets/vector.png'),
