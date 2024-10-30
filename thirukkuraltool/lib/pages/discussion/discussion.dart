@@ -50,115 +50,108 @@ class _DiscussionPageState extends State<Discussion> {
   @override
   void initState() {
     super.initState();
-    // Fetch discussions in real-time from Firestore
-    _discussionStream =
-        FirebaseFirestore.instance.collection("Discussion").snapshots();
+    // _discussionStream =
+    //     FirebaseFirestore.instance.collection("Discussion").snapshots();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Discussions"),
-      //   backgroundColor: Colors.deepOrange,
-      // ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepOrangeAccent, Colors.orangeAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search...',
+            hintStyle: TextStyle(color: Colors.black),
+            border: InputBorder.none,
           ),
-        ),
-        child: StreamBuilder<QuerySnapshot>(
-          stream: _discussionStream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Center(child: Text('No discussions found.'));
-            }
-
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                final doc = snapshot.data!.docs[index];
-                final data = doc.data() as Map<String, dynamic>;
-                final username = data['username'] as String;
-                final time = data['time'] as String;
-                final content = data['content'] as String;
-
-                return DiscussionCard(
-                  username: username,
-                  time: time,
-                  content: content,
-                  isCurrentUser: username == widget.currentUser,
-                );
-              },
-            );
+          style: TextStyle(color: Colors.white),
+          onChanged: (value) {
+            // Add your search logic here
           },
         ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'All Discussions') {
+                // Implement logic for All Discussions
+              } else if (value == 'Create New') {
+                _showCreateDiscussionDialog(context);
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              PopupMenuItem(
+                value: 'All Discussions',
+                child: Text('All Discussions'),
+              ),
+              PopupMenuItem(
+                value: 'Create New',
+                child: Text('Create New'),
+              ),
+            ],
+            icon: Icon(Icons.more_vert),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [Text("you are not in any of the discussion")],
       ),
     );
   }
-}
 
-class DiscussionCard extends StatelessWidget {
-  final String username;
-  final String time;
-  final String content;
-  final bool isCurrentUser;
+  void _showCreateDiscussionDialog(BuildContext context) {
+    final titleController = TextEditingController();
+    final descriptionController = TextEditingController();
 
-  const DiscussionCard({
-    Key? key,
-    required this.username,
-    required this.time,
-    required this.content,
-    required this.isCurrentUser,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: isCurrentUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Card(
-        color: isCurrentUser ? Colors.deepOrange[100] : Colors.white,
-        elevation: 3,
-        margin: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: isCurrentUser
-                ? CrossAxisAlignment.end
-                : CrossAxisAlignment.start,
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Create New Discussion'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                username,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrange,
-                ),
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(labelText: 'Title'),
               ),
-              SizedBox(height: 5),
-              Text(
-                content,
-                style: TextStyle(fontSize: 16, color: Colors.black87),
-              ),
-              SizedBox(height: 5),
-              Text(
-                time,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(labelText: 'Description'),
+                // maxLines: 3,
               ),
             ],
           ),
-        ),
-      ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final title = titleController.text;
+                final description = descriptionController.text;
+                DocumentReference docRef = await FirebaseFirestore.instance
+                    .collection('Discussion')
+                    .add({
+                  'title': title,
+                  'description': description,
+                  'createdAt': Timestamp.now(),
+                });
+                await FirebaseFirestore.instance
+                    .collection('SpecificDiscussion')
+                    .doc(docRef.id)
+                    .set({});
+
+                Navigator.of(context).pop();
+              },
+              child: Text('Create'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
