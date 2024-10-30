@@ -446,6 +446,7 @@ class _Kural extends State<Kural> {
       await flutterTts.awaitSpeakCompletion(true);
       Navigator.of(context).pop();
     }
+    // Navigator.of(context).pop();
   }
 
   void _showPopup(String ch) {
