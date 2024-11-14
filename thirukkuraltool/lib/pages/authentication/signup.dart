@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'splash_screen.dart'; // Make sure you import the Splash page
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -7,6 +9,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -45,7 +49,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: height * 0.05),
-                  // Heading
                   const Text(
                     'Sign up',
                     style: TextStyle(
@@ -72,6 +75,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   const SizedBox(height: 40),
 
+                  // First Name and Last Name Row
                   Row(
                     children: [
                       Expanded(
@@ -81,6 +85,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           child: TextField(
+                            controller: _firstNameController,
                             decoration: InputDecoration(
                               labelText: 'First name',
                               border: InputBorder.none,
@@ -98,6 +103,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           child: TextField(
+                            controller: _lastNameController,
                             decoration: InputDecoration(
                               labelText: 'Last name',
                               border: InputBorder.none,
@@ -111,6 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   const SizedBox(height: 20),
 
+                  // Email Field
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
@@ -151,12 +158,30 @@ class _SignUpPageState extends State<SignUpPage> {
                       try {
                         final email = _emailController.text.trim();
                         final password = _passwordController.text.trim();
-                        await _auth.createUserWithEmailAndPassword(
-                          email: email,
-                          password: password,
+
+                        // Create the user
+                        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
                         );
-                        Navigator.pop(context);
+
+                          await userCredential.user!.updateProfile(
+                          displayName: _firstNameController.text + " " + _lastNameController.text,
+                        );
+                        // Save user data to Firestore
+                        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+                          'firstName': _firstNameController.text,
+                          'lastName': _lastNameController.text,
+                          'email': email,
+                        });
+
+                        // Navigate to Splash page after signup
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => SplashScreen()), // Navigate to the Splash screen
+                        );
                       } catch (e) {
+                        // Show error dialog if signup fails
                         showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -171,7 +196,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             );
                           },
                         );
-
                         print('Error signing up: $e');
                       }
                     },

@@ -7,6 +7,8 @@ import 'package:thirukkuraltool/pages/like/likepage.dart';
 import 'package:thirukkuraltool/pages/profile/profile.dart';
 import 'package:thirukkuraltool/pages/query_content_gen/querycontentgen.dart';
 import 'package:thirukkuraltool/pages/search/search.dart';
+import 'globals.dart';
+import 'pages/authentication/login.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,13 +18,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   int _selectedIndex = 0;
-  String _username = '';
   late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
     _pages = [
       ThirukkuralHome(
         onPressed: (context, imagePath, title, subTitle, list) {
@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       Discussion(
-        currentUser: _username,
+        currentUser: globalUsername?? 'UserName',
       ),
       LikePage(),
       // QueryContentGen(),
@@ -59,24 +59,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> _loadUserData() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      String email = user.email ?? '';
-      setState(() {
-        _username = email.split('@')[0];
-      });
-    }
+Future<void> _signOut(BuildContext context) async {
+  try {
+    await _auth.signOut();
+    globalUserId=null;
+    globalUsername=null;
+    Navigator.of(context).pushReplacementNamed('/signin');
+  } catch (e) {
+    print('Error signing out: $e');
   }
+}
 
-  Future<void> _signOut(BuildContext context) async {
-    try {
-      await _auth.signOut();
-      Navigator.of(context).pushReplacementNamed('/signin');
-    } catch (e) {
-      print('Error signing out: $e');
-    }
-  }
 
   void _onItemTapped(int index) {
     print(index);
@@ -97,7 +90,7 @@ class _HomePageState extends State<HomePage> {
               backgroundImage: AssetImage('assets/vector.png'),
             ),
             SizedBox(width: 10),
-            Text(_username.isNotEmpty ? _username : 'User',
+            Text(globalUsername?? 'UserName',
                 style: TextStyle(
                   color: Color.fromARGB(255, 228, 228, 239),
                 )),

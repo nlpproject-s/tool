@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'signup.dart';
+import 'splash_screen.dart'; // Import the SplashScreen
 
 class SignInPage extends StatefulWidget {
   @override
@@ -129,14 +130,22 @@ class _SignInPageState extends State<SignInPage> {
                   ElevatedButton(
                     onPressed: () async {
                       try {
+                        // Sign in the user
                         UserCredential userCredential =
                             await _auth.signInWithEmailAndPassword(
                           email: _emailController.text,
                           password: _passwordController.text,
                         );
                         print("Signed in as ${userCredential.user?.email}");
+
+                        // After successful login, navigate to the SplashScreen
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => SplashScreen()),
+                        );
                       } catch (e) {
                         print("Failed to sign in: $e");
+                        // Optionally show an error dialog or snack bar
                       }
                     },
                     style: ElevatedButton.styleFrom(
