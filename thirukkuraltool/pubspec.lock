@@ -205,11 +205,7 @@ packages:
       sha256: "526faf84284b86a4cb36d20a5e45147747b7563d921373d4ee0559c54fcdbcea"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "0.14.1"
-=======
-    version: "0.13.1"
->>>>>>> 40042f3bf3268d8d02d91ce181d8a8b98bedacba
   flutter_lints:
     dependency: "direct dev"
     description:
