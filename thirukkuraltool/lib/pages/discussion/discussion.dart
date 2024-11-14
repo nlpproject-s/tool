@@ -70,6 +70,81 @@ class _DiscussionPageState extends State<Discussion> {
     });
   }
 
+  // Add new discussion
+  void _addNewDiscussion() {
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController literatureController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Create New Discussion'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(labelText: 'Title'),
+              ),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(labelText: 'Description'),
+              ),
+              TextField(
+                controller: literatureController,
+                decoration: InputDecoration(labelText: 'Literature'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                String title = titleController.text.trim();
+                String description = descriptionController.text.trim();
+                String literature = literatureController.text.trim();
+
+                if (title.isNotEmpty && description.isNotEmpty && literature.isNotEmpty) {
+                  // Get current user information
+                  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                      .collection('User')
+                      .doc(globalUserId)
+                      .get();
+
+                  String creatorName = userDoc['name'] ?? 'Unknown'; // Default if name is null
+
+                  // Add to Firestore
+                  await FirebaseFirestore.instance.collection('Discussion').add({
+                    'createdAt': FieldValue.serverTimestamp(),
+                    'createdBy': globalUserId,
+                    'creator': creatorName,
+                    'description': description,
+                    'favouritesCount': 0,
+                    'likesCount': 0,
+                    'literature': literature,
+                    'tags': [],
+                    'title': title,
+                  });
+
+                  // Close the dialog
+                  Navigator.pop(context);
+                }
+              },
+              child: Text('Submit'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> literatures = [
@@ -78,6 +153,15 @@ class _DiscussionPageState extends State<Discussion> {
     ];
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Discussions'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _addNewDiscussion, // Show dialog to create new discussion
+          ),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -119,52 +203,51 @@ class _DiscussionPageState extends State<Discussion> {
 
                           String profileInitial = doc['creator']?.substring(0, 1).toUpperCase() ?? '';
 
-return ListTile(
-  leading: CircleAvatar(
-    child: Text(profileInitial), // Display the initial
-  ),
-  title: Text(doc['title']),
-  subtitle: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(doc['description']),
-      Row(
-        children: [
-          IconButton(
-            icon: Icon(
-              isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-              color: isLiked ? Colors.blue : Colors.grey,
-            ),
-            onPressed: () => _toggleLike(discussionId, isLiked),
-          ),
-          Text('${doc['likesCount']}'),
-          IconButton(
-            icon: Icon(
-              isFavorited ? Icons.favorite : Icons.favorite_border,
-              color: isFavorited ? Colors.red : Colors.grey,
-            ),
-            onPressed: () => _toggleFavorite(discussionId, isFavorited),
-          ),
-          Text('${doc['favouritesCount']}'),
-        ],
-      ),
-    ],
-  ),
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DiscussionChat(
-          discussionId: discussionId,
-          creatorId: doc['createdBy'],  // The creator's user ID
-          creatorName: doc['creator'], // The creator's name
-          currentUser: widget.currentUser,
-        ),
-      ),
-    );
-  },
-);
-
+                          return ListTile(
+                            leading: CircleAvatar(
+                              child: Text(profileInitial), // Display the initial
+                            ),
+                            title: Text(doc['title']),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(doc['description']),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                                        color: isLiked ? Colors.blue : Colors.grey,
+                                      ),
+                                      onPressed: () => _toggleLike(discussionId, isLiked),
+                                    ),
+                                    Text('${doc['likesCount']}'),
+                                    IconButton(
+                                      icon: Icon(
+                                        isFavorited ? Icons.favorite : Icons.favorite_border,
+                                        color: isFavorited ? Colors.red : Colors.grey,
+                                      ),
+                                      onPressed: () => _toggleFavorite(discussionId, isFavorited),
+                                    ),
+                                    Text('${doc['favouritesCount']}'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DiscussionChat(
+                                    discussionId: discussionId,
+                                    creatorId: doc['createdBy'],  // The creator's user ID
+                                    creatorName: doc['creator'], // The creator's name
+                                    currentUser: widget.currentUser,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
                         },
                       );
                     },
