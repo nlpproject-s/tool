@@ -23,28 +23,19 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-<<<<<<< HEAD
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^3.0.0
   flutter_launcher_icons: "^0.14.1"
-=======
-  flutter_launcher_icons: ^0.13.1
-  flutter_lints: ^3.0.0
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logo.jpg"
->>>>>>> 40042f3bf3268d8d02d91ce181d8a8b98bedacba
+  image_path: "assets/app_icon.png"
+  min_sdk_android: 21
 
 flutter:
-<<<<<<< HEAD
-
+  uses-material-design: true
   assets:
+    - assets/logo.jpg
     - assets/adhigaram_1.png
     - assets/adhigaram_2.png
     - assets/adhigaram_3.png
@@ -69,15 +60,3 @@ flutter:
     - assets/board.png
     - assets/chatBackground.jpg
     - assets/chuvadi.png
-  uses-material-design: true
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/app_icon.png"
-  min_sdk_android: 21
-=======
-  uses-material-design: true
-
-  assets:
-    - assets/
->>>>>>> 40042f3bf3268d8d02d91ce181d8a8b98bedacba
