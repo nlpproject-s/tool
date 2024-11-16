@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:thirukkuraltool/pages/contribution/ContributionHome.dart';
 import 'package:thirukkuraltool/pages/discussion/discussion.dart';
 import 'package:thirukkuraltool/pages/kural/kural.dart';
 import 'package:thirukkuraltool/pages/like/likepage.dart';
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
       ),
       LikePage(),
       // QueryContentGen(),
-      Profile(),
+      ContributionsPage(),
       KuralPage(
           imagePath: "adhigaram_1.png",
           title: 'குறள் 1-10',
