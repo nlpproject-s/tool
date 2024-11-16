@@ -73,8 +73,8 @@ class _DiscussionPageState extends State<Discussion> {
   // Add new discussion
   void _addNewDiscussion() {
     final TextEditingController titleController = TextEditingController();
-    final TextEditingController descriptionController = TextEditingController();
     final TextEditingController literatureController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
 
     showDialog(
       context: context,
@@ -153,18 +153,41 @@ class _DiscussionPageState extends State<Discussion> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Discussions'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _addNewDiscussion, // Show dialog to create new discussion
-          ),
-        ],
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Literatures',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
+            height: 100,
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: literatures.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Chip(
+                    label: Text(
+                      literatures[index],
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: const Color.fromARGB(255, 255, 94, 0),
+                    shape: StadiumBorder(),
+                  ),
+                );
+              },
+            ),
+          ),
+          const Divider(height: 2.0),
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
@@ -259,38 +282,14 @@ class _DiscussionPageState extends State<Discussion> {
             ),
           ),
           Divider(height: 2.0),
+          // Add a Padding widget to create space before the button
           Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Literatures',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+            child: ElevatedButton(
+              onPressed: _addNewDiscussion, // Show dialog to create new discussion
+              child: Text('Create New Discussion'),
             ),
           ),
-          Container(
-            height: 100,
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: literatures.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Chip(
-                    label: Text(
-                      literatures[index],
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.blueAccent,
-                    shape: StadiumBorder(),
-                  ),
-                );
-              },
-            ),
-          ),
-          Divider(height: 2.0),
         ],
       ),
     );
