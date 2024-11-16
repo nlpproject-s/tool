@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       Discussion(
-        currentUser: globalUsername?? 'UserName',
+        currentUser: globalUsername ?? 'UserName',
       ),
       LikePage(),
       // QueryContentGen(),
@@ -59,17 +59,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-Future<void> _signOut(BuildContext context) async {
-  try {
-    await _auth.signOut();
-    globalUserId=null;
-    globalUsername=null;
-    Navigator.of(context).pushReplacementNamed('/signin');
-  } catch (e) {
-    print('Error signing out: $e');
+  Future<void> _signOut(BuildContext context) async {
+    try {
+      await _auth.signOut();
+      globalUserId = null;
+      globalUsername = null;
+      Navigator.of(context).pushReplacementNamed('/signin');
+    } catch (e) {
+      print('Error signing out: $e');
+    }
   }
-}
-
 
   void _onItemTapped(int index) {
     print(index);
@@ -90,25 +89,34 @@ Future<void> _signOut(BuildContext context) async {
               backgroundImage: AssetImage('assets/vector.png'),
             ),
             SizedBox(width: 10),
-            Text(globalUsername?? 'UserName',
+            Text(globalUsername ?? 'UserName',
                 style: TextStyle(
                   color: Color.fromARGB(255, 228, 228, 239),
                 )),
             Spacer(),
             IconButton(
               icon: Icon(
-                Icons.settings,
+                Icons.person,
                 color: Colors.white,
               ),
-              onPressed: () => _signOut(context),
+              onPressed: () => {},
             ),
             IconButton(
-              icon: Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
-              onPressed: () => _signOut(context),
-            ),
+                icon: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                ),
+                onPressed: () => {}
+                // _signOut(context),
+                ),
+            IconButton(
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                ),
+                onPressed: () => {}
+                //  _signOut(context),
+                ),
           ],
         ),
       ),
@@ -129,8 +137,8 @@ Future<void> _signOut(BuildContext context) async {
             label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.double_arrow),
+            label: 'Contributions',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.auto_stories),

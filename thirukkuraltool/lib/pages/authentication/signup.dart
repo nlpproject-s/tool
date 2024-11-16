@@ -158,30 +158,54 @@ class _SignUpPageState extends State<SignUpPage> {
                       try {
                         final email = _emailController.text.trim();
                         final password = _passwordController.text.trim();
+                        final firstName = _firstNameController.text.trim();
+                        final lastName = _lastNameController.text.trim();
 
-                        // Create the user
-                        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-                        email: email,
-                        password: password,
+                        // Create user in Firebase Authentication
+                        UserCredential userCredential =
+                            await _auth.createUserWithEmailAndPassword(
+                          email: email,
+                          password: password,
                         );
 
-                          await userCredential.user!.updateProfile(
-                          displayName: _firstNameController.text + " " + _lastNameController.text,
-                        );
-                        // Save user data to Firestore
-                        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-                          'firstName': _firstNameController.text,
-                          'lastName': _lastNameController.text,
-                          'email': email,
-                        });
+                        final String userId = userCredential.user!.uid;
 
-                        // Navigate to Splash page after signup
+                        // Insert data into User collection
+                        // await FirebaseFirestore.instance
+                        //     .collection('User')
+                        //     .doc(userId)
+                        //     .set({
+                        //   'firstName': firstName,
+                        //   'lastName': lastName,
+                        //   'email': email,
+                        // });
+
+                        // Insert data into UserData collection
+                        try {
+                          await FirebaseFirestore.instance
+                              .collection('User')
+                              .doc(userId)
+                              .set({
+                            'name': "$firstName $lastName",
+                            'email': email,
+                            'like': [],
+                            'favourite': [],
+                            'profileImageUrl': ""
+                          });
+                          print(
+                              "Data successfully saved to 'User' collection for userId: $userId");
+                        } catch (e) {
+                          print("Error saving to 'User' collection: $e");
+                        }
+
+                        // Navigate to SplashScreen
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => SplashScreen()), // Navigate to the Splash screen
+                          MaterialPageRoute(
+                              builder: (context) => SplashScreen()),
                         );
                       } catch (e) {
-                        // Show error dialog if signup fails
+                        // Handle errors
                         showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -210,63 +234,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       'Sign up',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.white70,
-                          thickness: 1.5,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Or sign up with',
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.white70,
-                          thickness: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  // Google Sign-Up Button
-                  IconButton(
-                    onPressed: () {
-                      // Add your Google sign-up functionality here
-                    },
-                    icon: Image.asset(
-                      'assets/google.png',
-                      width: 40,
-                      height: 40,
-                    ),
-                    iconSize: 40,
-                  ),
-                  const SizedBox(height: 20),
-                  // Sign In Link
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Already have an account?",
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          'Sign in',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
                   ),
                   SizedBox(height: mediaQuery.viewInsets.bottom),
                 ],

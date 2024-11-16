@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        // Define the routes here
         routes: {
           '/signin': (context) => SignInPage(),
         },
@@ -24,13 +23,13 @@ class MyApp extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return SplashScreen(); // Add splash screen here
+              return SplashScreen();
             }
 
             if (snapshot.hasData) {
               return HomePage();
             } else {
-              return SignInPage(); // This will also handle when no user is signed in
+              return SignInPage();
             }
           },
         ));
