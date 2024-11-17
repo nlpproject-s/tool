@@ -43,28 +43,28 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
-    - assets/logo.jpg
-    - assets/adhigaram_1.png
-    - assets/adhigaram_2.png
-    - assets/adhigaram_3.png
-    - assets/adhigaram_4.png
-    - assets/adhigaram_5.png
-    - assets/adhigaram_6.png
-    - assets/adhigaram_7.png
-    - assets/adhigaram_8.png
-    - assets/adhigaram_9.png
-    - assets/adhigaram_10.png
-    - assets/adhigaram_11.png
-    - assets/thiruvalluvar.png
-    - assets/valluvar1.png
-    - assets/valluvar2.png
-    - assets/google.png
-    - assets/tamil.png
-    - assets/tamil_1.png
-    - assets/vector.png
-    - assets/thiruvalluvar_1.png
-    - assets/school.png
-    - assets/orange_grad.png
-    - assets/board.png
-    - assets/chatBackground.jpg
-    - assets/chuvadi.png
+    # - assets/logo.jpg
+    # - assets/adhigaram_1.png
+    # - assets/adhigaram_2.png
+    # - assets/adhigaram_3.png
+    # - assets/adhigaram_4.png
+    # - assets/adhigaram_5.png
+    # - assets/adhigaram_6.png
+    # - assets/adhigaram_7.png
+    # - assets/adhigaram_8.png
+    # - assets/adhigaram_9.png
+    # - assets/adhigaram_10.png
+    # - assets/adhigaram_11.png
+    # - assets/thiruvalluvar.png
+    # - assets/valluvar1.png
+    # - assets/valluvar2.png
+    # - assets/google.png
+    # - assets/tamil.png
+    # - assets/tamil_1.png
+    # - assets/vector.png
+    # - assets/thiruvalluvar_1.png
+    # - assets/school.png
+    # - assets/orange_grad.png
+    # - assets/board.png
+    # - assets/chatBackground.jpg
+    # - assets/chuvadi.png

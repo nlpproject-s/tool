@@ -190,7 +190,9 @@ class _SignUpPageState extends State<SignUpPage> {
                             'email': email,
                             'like': [],
                             'favourite': [],
-                            'profileImageUrl': ""
+                            'profileImageUrl': "",
+                            'contributions': [],
+                            'verifications': [],
                           });
                           print(
                               "Data successfully saved to 'User' collection for userId: $userId");
@@ -198,7 +200,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           print("Error saving to 'User' collection: $e");
                         }
 
-                        // Navigate to SplashScreen
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
