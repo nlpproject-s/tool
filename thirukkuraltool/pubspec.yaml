@@ -31,15 +31,18 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   flutter_launcher_icons: "^0.14.1"
 
-flutter_icons:
-  android: true
+flutter_launcher_icons:
+  android: "launcher_icon"
   ios: true
   image_path: "assets/app_icon.png"
-  min_sdk_android: 21
+  min_sdk_android: 24
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/app_icon.png"
 
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/logo.jpg
     - assets/adhigaram_1.png
     - assets/adhigaram_2.png
