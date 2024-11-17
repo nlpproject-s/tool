@@ -14,12 +14,34 @@ class Discussion extends StatefulWidget {
 
 class _DiscussionPageState extends State<Discussion> {
   late Stream<QuerySnapshot> _discussionStream;
+  String? _selectedLiterature; // State variable to track the selected literature
+  TextEditingController _searchController = TextEditingController(); // Search bar controller
+  String _searchQuery = ''; // State variable for search query
 
   @override
   void initState() {
     super.initState();
-    _discussionStream =
-        FirebaseFirestore.instance.collection("Discussion").snapshots();
+    _discussionStream = FirebaseFirestore.instance.collection("Discussion").snapshots();
+  }
+
+  // Method to update the stream based on the selected literature or search query
+  void _filterDiscussions() {
+    setState(() {
+      Query query = FirebaseFirestore.instance.collection("Discussion");
+
+      // Apply search query filter if search query is provided
+      if (_searchQuery.isNotEmpty) {
+        query = query.where('title', isGreaterThanOrEqualTo: _searchQuery)
+                     .where('title', isLessThanOrEqualTo: _searchQuery + '\uf8ff');
+      }
+
+      // Apply literature filter if selected
+      if (_selectedLiterature != null && _selectedLiterature != 'None') {
+        query = query.where("literature", isEqualTo: _selectedLiterature!.toLowerCase());
+      }
+
+      _discussionStream = query.snapshots();
+    });
   }
 
   // Toggle like status and update Firestore
@@ -122,7 +144,7 @@ class _DiscussionPageState extends State<Discussion> {
                     'description': description,
                     'favouritesCount': 0,
                     'likesCount': 0,
-                    'literature': literature,
+                    'literature': literature.toLowerCase(),
                     'tags': [],
                     'title': title,
                   });
@@ -153,49 +175,66 @@ class _DiscussionPageState extends State<Discussion> {
     ];
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Discussions'),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Literatures',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            height: 100,
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: literatures.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Chip(
-                    label: Text(
-                      literatures[index],
-                      style: TextStyle(color: Colors.white),
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Search Bar
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value;
+                      });
+                      _filterDiscussions(); // Trigger the filtering when search query changes
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
                     ),
-                    backgroundColor: const Color.fromARGB(255, 255, 94, 0),
-                    shape: StadiumBorder(),
                   ),
-                );
-              },
+                ),
+                const SizedBox(width: 16), // Space between search bar and dropdown
+                // Literature Dropdown
+                Container(
+                  width: 150, // Adjust width as needed
+                  child: DropdownButton<String>(
+                    value: _selectedLiterature,
+                    hint: Text('Literature'),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedLiterature = newValue;
+                      });
+                      _filterDiscussions(); // Trigger filtering when a new literature is selected
+                    },
+                    items: ['Literatues', ...literatures].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
           ),
-          const Divider(height: 2.0),
+
+          // Discussions section
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
               'Discussions',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
           ),
           Expanded(
@@ -213,7 +252,7 @@ class _DiscussionPageState extends State<Discussion> {
                       return FutureBuilder<DocumentSnapshot>(
                         future: FirebaseFirestore.instance
                             .collection('User')
-                            .doc(globalUserId)  // Fetching the current user's document
+                            .doc(globalUserId) // Fetching the current user's document
                             .get(),
                         builder: (context, userSnapshot) {
                           if (!userSnapshot.hasData) {
@@ -226,50 +265,75 @@ class _DiscussionPageState extends State<Discussion> {
 
                           String profileInitial = doc['creator']?.substring(0, 1).toUpperCase() ?? '';
 
-                          return ListTile(
-                            leading: CircleAvatar(
-                              child: Text(profileInitial), // Display the initial
+                          return Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), // Rounded corners
                             ),
-                            title: Text(doc['title']),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(doc['description']),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-                                        color: isLiked ? Colors.blue : Colors.grey,
-                                      ),
-                                      onPressed: () => _toggleLike(discussionId, isLiked),
-                                    ),
-                                    Text('${doc['likesCount']}'),
-                                    IconButton(
-                                      icon: Icon(
-                                        isFavorited ? Icons.favorite : Icons.favorite_border,
-                                        color: isFavorited ? Colors.red : Colors.grey,
-                                      ),
-                                      onPressed: () => _toggleFavorite(discussionId, isFavorited),
-                                    ),
-                                    Text('${doc['favouritesCount']}'),
-                                  ],
+                            elevation: 2, // Add elevation for shadow effect
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
+                              leading: CircleAvatar(
+                                child: Text(profileInitial),
+                              ),
+                              title: Text(
+                                doc['title'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.black87,
                                 ),
-                              ],
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DiscussionChat(
-                                    discussionId: discussionId,
-                                    creatorId: doc['createdBy'],  // The creator's user ID
-                                    creatorName: doc['creator'], // The creator's name
-                                    currentUser: widget.currentUser,
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    doc['description'],
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                  const SizedBox(height: 8.0), // Spacing between text and icons
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(
+                                          isLiked ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
+                                          color: isLiked ? Colors.blue : Colors.grey,
+                                        ),
+                                        onPressed: () => _toggleLike(discussionId, isLiked),
+                                      ),
+                                      Text('${doc['likesCount']}'),
+                                      IconButton(
+                                        icon: Icon(
+                                          isFavorited ? Icons.favorite : Icons.favorite_border,
+                                          color: isFavorited ? Colors.red : Colors.grey,
+                                        ),
+                                        onPressed: () => _toggleFavorite(discussionId, isFavorited),
+                                      ),
+                                      Text('${doc['favouritesCount']}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              trailing: const Icon(Icons.arrow_forward_ios, color: Colors.orange),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DiscussionChat(
+                                      discussionId: discussionId,
+                                      creatorId: doc['createdBy'],
+                                      creatorName: doc['creator'],
+                                      currentUser: widget.currentUser,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           );
                         },
                       );
@@ -281,16 +345,11 @@ class _DiscussionPageState extends State<Discussion> {
               },
             ),
           ),
-          Divider(height: 2.0),
-          // Add a Padding widget to create space before the button
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: _addNewDiscussion, // Show dialog to create new discussion
-              child: Text('Create New Discussion'),
-            ),
-          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNewDiscussion,
+        child: const Icon(Icons.add),
       ),
     );
   }
