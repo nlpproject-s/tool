@@ -120,9 +120,9 @@ class _DiscussionChatState extends State<DiscussionChat> {
           ),
         ],
       ),
-    );
-  },
-);
+                  );
+                  },
+                );
 
               },
             ),
