@@ -169,7 +169,7 @@ void _filterDiscussions() {
         ),
       ),
 Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  padding: const EdgeInsets.symmetric(horizontal: 16.0), 
   child: SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: Row(

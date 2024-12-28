@@ -69,57 +69,57 @@ class _DiscussionChatState extends State<DiscussionChat> {
 
                 final messages = snapshot.data!.docs;
                 return ListView.builder(
-  itemCount: messages.length,
-  itemBuilder: (context, index) {
-    final message = messages[index];
-    bool isCurrentUser = message['userID'] == globalUserId;
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final message = messages[index];
+                    bool isCurrentUser = message['userID'] == globalUserId;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-      child: Row(
-        mainAxisAlignment:
-            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!isCurrentUser)
-            CircleAvatar(
-              child: Text(message['username'][0].toUpperCase()),
-            ),
-          const SizedBox(width: 8),
-          Flexible(  // Wraps message content to avoid overflow
-            child: Column(
-              crossAxisAlignment: isCurrentUser
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isCurrentUser ? 'You' : message['username'],
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: isCurrentUser ? Colors.orange.shade100 : Colors.orange.shade200,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                  child: Text(
-                    message['message'],
-                    textAlign: isCurrentUser ? TextAlign.right : TextAlign.left,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  (message['timestamp'] as Timestamp)
-                      .toDate()
-                      .toLocal()
-                      .toString()
-                      .substring(0, 16),
-                  style: const TextStyle(fontSize: 10, color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment:
+                            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        children: [
+                          if (!isCurrentUser)
+                            CircleAvatar(
+                              child: Text(message['username'][0].toUpperCase()),
+                            ),
+                          const SizedBox(width: 8),
+                          Flexible(  // Wraps message content to avoid overflow
+                            child: Column(
+                              crossAxisAlignment: isCurrentUser
+                                  ? CrossAxisAlignment.end
+                                  : CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  isCurrentUser ? 'You' : message['username'],
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: isCurrentUser ? Colors.orange.shade100 : Colors.orange.shade200,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                                  child: Text(
+                                    message['message'],
+                                    textAlign: isCurrentUser ? TextAlign.right : TextAlign.left,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  (message['timestamp'] as Timestamp)
+                                      .toDate()
+                                      .toLocal()
+                                      .toString()
+                                      .substring(0, 16),
+                                  style: const TextStyle(fontSize: 10, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                   );
                   },
                 );
