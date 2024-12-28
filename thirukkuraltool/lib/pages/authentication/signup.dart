@@ -188,8 +188,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               .set({
                             'name': "$firstName $lastName",
                             'email': email,
-                            'like': [],
-                            'favourite': [],
+                            'likes': [],
+                            'favourites': [],
                             'profileImageUrl': "",
                             'contributions': [],
                             'verifications': [],

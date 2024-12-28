@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:thirukkuraltool/pages/contribution/ContributionHome.dart';
 import 'package:thirukkuraltool/pages/discussion/discussion.dart';
 import 'package:thirukkuraltool/pages/kural/kural.dart';
-import 'package:thirukkuraltool/pages/like/likepage.dart';
 import 'package:thirukkuraltool/pages/profile/profile.dart';
 import 'package:thirukkuraltool/pages/query_content_gen/querycontentgen.dart';
 import 'package:thirukkuraltool/pages/search/search.dart';
@@ -34,8 +33,7 @@ class _HomePageState extends State<HomePage> {
       Discussion(
         currentUser: globalUsername ?? 'UserName',
       ),
-      LikePage(),
-      // QueryContentGen(),
+      QueryContentGen(),
       ContributionsPage(),
       KuralPage(
           imagePath: "adhigaram_1.png",
@@ -115,7 +113,9 @@ class _HomePageState extends State<HomePage> {
                   Icons.logout,
                   color: Colors.white,
                 ),
-                onPressed: () => {}
+                onPressed: () => {
+                      _signOut(context),
+                    }
                 //  _signOut(context),
                 ),
           ],
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.double_arrow),
-            label: 'Contributions',
+            label: 'Contribute',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.auto_stories),

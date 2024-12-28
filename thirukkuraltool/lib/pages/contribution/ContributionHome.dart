@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:thirukkuraltool/globals.dart';
 import 'package:thirukkuraltool/pages/contribution/ContributionCategory.dart';
 
 class ContributionsPage extends StatefulWidget {
@@ -8,6 +10,32 @@ class ContributionsPage extends StatefulWidget {
 
 class _ContributionsPageState extends State<ContributionsPage> {
   String _selectedCategory = "Thirukkural"; // Default category
+  List<DocumentSnapshot> _categories = []; // Store fetched categories
+  bool _isLoadingCategories = true; // Loading state for categories
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('ContributionCategories')
+          .get();
+      setState(() {
+        _categories = snapshot.docs;
+        _isLoadingCategories = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingCategories = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch categories: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +64,6 @@ class _ContributionsPageState extends State<ContributionsPage> {
                     ),
                   ),
                   SizedBox(height: height * 0.02),
-
-                  // Literature Categories Section
                   Text(
                     "Literature Categories",
                     style: TextStyle(
@@ -49,25 +75,32 @@ class _ContributionsPageState extends State<ContributionsPage> {
               ),
             ),
             SizedBox(height: height * 0.01),
+
+            // Literature Categories Section
             SizedBox(
               height: height * 0.15,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                children: [
-                  _literatureCard("+", "assets/add.png"),
-                  _literatureCard("Thirukkural", "assets/thirukkural.png"),
-                  _literatureCard(
-                      "Silapathikaram", "assets/silapathikaram.png"),
-                  _literatureCard("Tolkappiyam", "assets/tolkappiyam.png"),
-                  _literatureCard("Ettutogai", "assets/ettutogai.png"),
-                  _literatureCard("Pattupattu", "assets/pattupattu.png"),
-                ],
-              ),
+              child: _isLoadingCategories
+                  ? Center(child: CircularProgressIndicator())
+                  : _categories.isEmpty
+                      ? Center(child: Text("No categories found"))
+                      : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: width * 0.05),
+                          itemCount: _categories.length,
+                          itemBuilder: (context, index) {
+                            final categoryData = _categories[index];
+                            final categoryName =
+                                categoryData['category'] ?? 'Unknown';
+                            final imagePath =
+                                'assets/${categoryData['category']}.png';
+
+                            return _literatureCard(categoryName, imagePath);
+                          },
+                        ),
             ),
             SizedBox(height: height * 0.02),
 
-            // Contributions Section
             Padding(
               padding: EdgeInsets.symmetric(horizontal: width * 0.05),
               child: Column(
@@ -99,7 +132,6 @@ class _ContributionsPageState extends State<ContributionsPage> {
             ),
             SizedBox(height: height * 0.02),
 
-            // Dynamic Body Content
             Expanded(
               child: ContributionCategory(_selectedCategory),
             ),
@@ -181,34 +213,40 @@ void _showCreateCategory(BuildContext context) {
             TextField(
               controller: descriptionController,
               decoration: InputDecoration(labelText: 'Description'),
-              // maxLines: 3,
             ),
           ],
         ),
         actions: [
+          // Cancel Button
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(); // Close the dialog
             },
             child: Text('Cancel'),
           ),
+
+          // Create Button
           TextButton(
             onPressed: () async {
-              // final title = titleController.text;
-              // final description = descriptionController.text;
-              // DocumentReference docRef = await FirebaseFirestore.instance
-              //     .collection('Discussion')
-              //     .add({
-              //   'title': title,
-              //   'description': description,
-              //   'createdAt': Timestamp.now(),
-              // });
-              // await FirebaseFirestore.instance
-              //     .collection('SpecificDiscussion')
-              //     .doc(docRef.id)
-              //     .set({});
+              final title = titleController.text;
+              final description = descriptionController.text;
 
-              // Navigator.of(context).pop();
+              if (title.isNotEmpty && description.isNotEmpty) {
+                await FirebaseFirestore.instance
+                    .collection('ContributionCategories')
+                    .add({
+                  'category': title,
+                  'description': description,
+                  'createdAt': Timestamp.now(),
+                  'createdBy': globalUserId,
+                });
+
+                Navigator.of(context).pop();
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Please fill in all fields')),
+                );
+              }
             },
             child: Text('Create'),
           ),

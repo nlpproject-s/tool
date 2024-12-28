@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making of Indian Constitution Timeline</title>
+    <link rel="icon" type="image/png" href="logo192.png">
+    <link rel="stylesheet" href="his.css">
+    <style>
+        /* Hide unwanted Google Translate elements initially */
+        .skiptranslate,
+        .goog-te-banner-frame,
+        .goog-te-menu-frame,
+        .goog-te-menu-value,
+        .goog-te-gadget-icon {
+            display: none !important;
+        }
+
+        /* Show the dropdown only */
+        #google_translate_element {
+            display: block !important;
+            margin: 0 !important;
+            position: top;
+        }
+
+        
+        .goog-te-menu2,
+        .goog-te-menu2-item {
+            font-size: 14px !important; 
+        }
+
+        
+        body {
+            top: 0 !important;
+        }
+
+       
+        .language-selector {
+            margin: 20px 0 !important;
+        }
+
+        .language-selector label {
+            margin-right: 10px !important;
+        }
+        
+header {
+    width: 100%;
+    background-color: #f8f9fa; /* Optional: Background color for the header */
+    padding: 5px 0; /* Add padding for spacing */
+    text-align: center; /* Center-align the content */
+    position: fixed; /* Fix the header at the top */
+    top: 0; /* Align it to the top of the viewport */
+    left: 0; /* Align it to the left of the viewport */
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    width: 100vw;
+    background-color: #e8cce5;
+}
+
+#game-container {
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    justify-content: center;
+}
+
+#timeline {
+    display: flex;
+    /* margin-bottom: 20px; */
+    padding: 5px;
+    background-color: #caf4ff;
+    border: 1px solid #9c765f;
+    border-radius: 10px;
+    min-height: 300px;
+    width: 100%;
+    /* align-items: center; */
+    justify-content: stretch;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+
+#current-card-container {
+    display: flex;
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #eae2b4;
+    border: 2px dashed #6a4619;
+    border-radius: 4px;
+    width: 230px;
+    min-height: 200px;
+    justify-content: center;
+}
+
+.site-title {
+    font-size: 1.5em; /* Adjust the font size */
+    font-weight: bold; /* Make the font bold */
+    color: #333; /* Set the font color */
+    margin: 0; /* Remove default margin */
+    font-family: 'Arial', sans-serif; /* Set the font family */
+}
+  
+
+.card {
+    position: relative;
+    margin: 5px;
+    padding: 10px;
+    min-height: 100px;
+    min-width: 200px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #f8e3f7;
+    cursor: grab;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-family: Arial, sans-serif;
+
+    
+}
+
+.card .name {
+    text-decoration: underline black;
+    font-style: italic;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: #000000;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+/* .image{
+    color:red;
+    width: 100%;
+    height: 100%;
+} */
+
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    width: 150px;
+    height: 80px;
+}
+
+.card img {
+    /* max-height: 100%; */
+    /* max-width: 100%; */
+    object-fit: cover;
+    margin: auto;
+    border: 2px solid rgb(255, 0, 0);
+}
+
+.card .description {
+    font-size: 14px;
+    text-align: center;
+    font-weight: lighter;
+    border: 1px solid black;
+    margin-top: 5px;
+    /* margin: auto; */
+    background-color: #a7def5;
+    border-radius: 3px;
+    padding: 3px;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.card .date {
+    display: none;
+    border-radius: 5px;
+    border: 2px solid green;
+    background-color: #2aca4f;
+    padding: 10px;
+    color: #020202;
+    font-weight: bold;
+    text-align: center;
+    font-size: 15px;
+    margin-top: auto;
+}
+
+/* for the display message */
+#message {
+    margin-top: 20px;
+    font-size: 30px;
+    font-style: oblique;
+    font-weight: bolder;
+}
+
+#next-card-button {
+    margin-bottom: 5px;
+    padding: 10px 20px;
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#next-card-button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+#game-rules-button{
+    margin-bottom: 5px;
+        padding: 10px 15px;
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid rgb(255, 255, 255);
+        border-radius: 3px;
+        cursor: pointer;
+}
+
+.game-rules-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 2px;
+}
+
+@media only screen and (max-width: 725px) {
+
+    .game-rules-tooltip {
+            display: none;
+            min-width: 200px;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: left;
+            border-radius: 5px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .game-rules-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #f9f9f9 transparent transparent transparent;
+        }
+
+    h3,#rules-content{
+        color: rgb(0, 0, 0);
+        }
+}
+@media only screen and (min-width: 725px) {
+
+.game-rules-tooltip {
+        display: none;
+        min-width: 200px;
+        background-color: #f9f9f9;
+        color: #333;
+        text-align: left;
+        border-radius: 5px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        top: 30%;
+        left: 110%;
+        transform: translateY(-50%);
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .game-rules-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%) translateX(-100%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: transparent #f9f9f9 transparent transparent;
+    }
+
+    h3,#rules-content{
+        color: rgb(0, 0, 0);
+    }
+    
+}
+
+#play-again-button{
+    display: none;
+    margin-bottom: 20px;
+    margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #000000;
+        color: #ffffff;
+        border: 2px solid rgb(255, 255, 255);
+        border-radius: 3px;
+        cursor: pointer;
+}
+
+.card.dragging {
+    opacity: 0.7;
+    border: 2px dashed #000;
+}
+
+.card.correct {
+    border: 2px solid green;
+    background-color: #e0ffe0;
+    cursor: default;
+}
+
+.card.incorrect {
+    border: 2px solid red;
+    background-color: #ffe0e0;
+}
+
+.card.flippable {
+    cursor: pointer;
+}
+
+.card .back {
+    display: none;
+    background-color: #e0ffe0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.card.incorrect .back{
+    background: #ffe0e0;
+}
+
+.card.flipped .front {
+    display: none;
+}
+
+.card.flipped .back {
+    display: block;
+}
+
+.information {
+    font-size: 15px;
+        text-align:left;
+        font-weight: lighter;
+        border: 1px solid black;
+        margin: 5px;
+        /* margin: auto; */
+        background-color: #a7def5;
+        border-radius: 3px;
+        padding: 5px;
+        color: #333;
+        height: 230px;
+}
+
+.wikipedia {
+    margin-top: auto;
+}
+
+
+    </style>
+
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en'
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+
+<body>
+    <header>
+        <h1 class="site-title">Making of Indian Constitution Timeline</h1>
+    </header>
+
+    <!-- Google Translate Widget Container -->
+    <div id="google_translate_element" style="margin-bottom: 20px;"></div>
+
+    <!-- Language Selector -->
+
+    <div id="game-container">
+        <div id="current-card-container"></div>
+        <div class="temp" style="display:flex;">
+            <button id="next-card-button" disabled>Load Next Card</button>
+            <div class="game-rules-container">
+                <button id="game-rules-button" onclick="toggleGameRules()">Game Rules</button>
+            </div>
+        </div>
+        <div id="timeline"></div>
+        <div id="play-again-button" onclick="refreshPage()">Play Again</div>
+        <div id="message"></div>
+    </div>
+
+    <script src="his.js"></script>
+
+    <!-- Language Change Handler Script -->
+    <script type="text/javascript">
+        function handleLanguageChange() {
+            var language = document.getElementById('language-select').value;
+            if (language) {
+                var frame = document.querySelector('iframe[id^="goog-translate-iframe"]');
+                if (frame) {
+                    var doc = frame.contentDocument || frame.contentWindow.document;
+                    var select = doc.querySelector('select');
+                    if (select) {
+                        select.value = language;
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                }
+            }
+        }
+        const events = [
+    { 
+        event: "Britain Decides to Grant Independence", 
+        date: 1946, 
+        image: "https://media.iwm.org.uk/cantaloupe/iiif/2/22%7C%7C591%7C%7Clarge_000000.jpg/full/full/0/default.jpg", 
+        description: "Britain grants India's independence.",
+        additional_info: "Britain decides on granting independence to India, and the Cabinet Mission is dispatched to discuss modalities for the transfer of power."
+    },
+    { 
+        event: "Proposal for Creation of Committees", 
+        date: "August 14, 1947", 
+        image: "https://learn.culturalindia.net/wp-content/uploads/2018/07/partition-of-india-6.jpg", 
+        description: "Proposal for the creation of committees is tabled.",
+        additional_info: "A proposal to create committees was tabled on August 14, 1947, aiming to establish structured groups for specific tasks."
+    },
+    { 
+        event: "Drafting Committee Established", 
+        date: '29 August 1947', 
+        image: "https://www.constitutionofindia.net/wp-content/uploads/2023/06/66.jpg", 
+        description: "Drafting committee is established to start the process of writing the constitution.",
+        additional_info: "This committee was formed to carefully craft and outline the legal framework and fundamental laws of the newly independent nation of India."
+    },
+    { 
+        event: "Constituent Assembly Convenes", 
+        date: "6 December 1947", 
+        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Jawaharal_Nehru_and_other_members_taking_pledge.jpg/372px-Jawaharal_Nehru_and_other_members_taking_pledge.jpg", 
+        description: "The Constituent Assembly meets for the first time to begin drafting the constitution.",
+        additional_info: "Constituent Assembly formally convenes for the first time, following elections, to start the process of writing a constitution."
+    },
+    { 
+        event: "Draft Finalized and Submitted", 
+        date: '4 November 1948', 
+        image: "https://clpr.org.in/wp-content/uploads/2020/11/Dr.-B.-R-Ambedkar-300x169.jpg", 
+        description: "Draft of the constitution is finalized and submitted.",
+        additional_info: "The draft of the constitution is completed and officially submitted for review and approval by the relevant authorities or bodies."
+    },
+    { 
+        event: "Constituent Assembly Sessions", 
+        date: "1948 – 1949", 
+        image: "https://www.constitutionofindia.net/wp-content/uploads/2023/04/stage7-1.jpeg", 
+        description: "Constituent Assembly meets in sessions open to the public.",
+        additional_info: "The Constituent Assembly holds meetings that are open for the public to attend, allowing transparency and public participation in the constitutional drafting process."
+    },
+    { 
+        event: "Revision of the Draft Constitution", 
+        date: '14 November 1949', 
+        image: "https://www.constitutionofindia.net/wp-content/uploads/2023/04/stage8-1.jpg", 
+        description: "Drafting Committee proceeded to revise the Draft Constitution ",
+        additional_info: "After debates on the Draft Constitution, the Drafting Committee revised it according to the Constituent Assembly's decisions."
+    },
+    { 
+        event: "Final Draft Adopted", 
+        date: '26 November 1949', 
+        image: "https://www.constitutionofindia.net/wp-content/uploads/2023/04/stage9-1.jpeg", 
+        description: "Constituent Assembly adopts the final draft, making it official.",
+        additional_info: "The Constituent Assembly approves and officially adopts the final version of the constitution, completing the drafting process."
+    },
+    { 
+        event: "Constitution Comes into Force", 
+        date: "26 January 1950", 
+        image: "https://static.foxnews.com/foxnews.com/content/uploads/2022/12/GettyImages-1177030027.jpg", 
+        description: "Entry into force of the new constitution.",
+        additional_info: "The third reading of the Constitution ended with the Constituent Assembly voting in favor of Ambedkar's motion from the previous stage."
+    }
+];
+
+
+
+let mistakes = 0;
+let currentStreak = 0;
+let longestStreak = 0;
+let usedIndices = new Set();
+
+const timeline = document.getElementById('timeline');
+const currentCardContainer = document.getElementById('current-card-container');
+const nextCardButton = document.getElementById('next-card-button');
+const message = document.getElementById('message');
+
+nextCardButton.addEventListener('click', loadNextCard);
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function initializeGame() {
+    mistakes = 0;
+    currentStreak = 0;
+    longestStreak = 0;
+    usedIndices.clear();
+    message.textContent = '';
+
+    timeline.innerHTML = '';
+    currentCardContainer.innerHTML = '';
+    nextCardButton.disabled = true;
+
+    shuffle(events);
+
+    const baseEvent = events[0];
+    usedIndices.add(0);
+    const baseCard = createCard(baseEvent);
+    baseCard.querySelector('.date').style.display = 'block';
+    baseCard.classList.add('correct');
+    baseCard.classList.add('flippable');
+    baseCard.draggable = false;
+    timeline.appendChild(baseCard);
+
+    loadNextCard();
+}
+
+function createCard(event) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.draggable = true;
+    card.innerHTML = `
+        
+            <div class="name">${event.event}</div>
+            <div class="image">
+            <img src="${event.image}" alt="img.png" class="unselectable">
+            </div>
+            <div class="description">${event.description}</div>
+            <div class="date">${event.date}</div>
+        
+        <div class="back">
+        <p class="information">${event.additional_info}</p>
+        <div class="wikipedia"> 
+        <a href="https://www.constitutionofindia.net/stages-of-constitution-making/" target="_blank">Wikipedia Link</a>
+        </div>
+        </div>
+    `;
+    card.dataset.date = event.date;
+    card.addEventListener('dragstart', dragStart);
+    card.addEventListener('dragend', dragEnd);
+    card.addEventListener('click', flipCard);
+    return card;
+}
+
+function loadNextCard() {
+    if (currentCardContainer.children.length === 0) {
+        currentCardContainer.innerHTML = '';
+
+        let nextEventIndex;
+        do {
+            nextEventIndex = Math.floor(Math.random() * events.length);
+        } while (usedIndices.has(nextEventIndex) && usedIndices.size < events.length);
+
+        if (usedIndices.size < events.length) {
+            usedIndices.add(nextEventIndex);
+            const nextEvent = events[nextEventIndex];
+            const nextCard = createCard(nextEvent);
+            currentCardContainer.appendChild(nextCard);
+            nextCardButton.disabled = false;
+        } else {
+            nextCardButton.disabled = true;
+        }
+    }
+}
+
+function dragStart(e) {
+    e.dataTransfer.setData('text/plain', e.target.dataset.date);
+    e.target.classList.add('dragging');
+}
+
+function dragEnd(e) {
+    e.target.classList.remove('dragging');
+}
+
+timeline.addEventListener('dragover', e => {
+    e.preventDefault();
+    const afterElement = getDragAfterElement(timeline, e.clientX);
+    const draggable = document.querySelector('.dragging');
+    if (afterElement == null) {
+        timeline.appendChild(draggable);
+    } else {
+        timeline.insertBefore(draggable, afterElement);
+    }
+});
+
+timeline.addEventListener('drop', e => {
+    const date = e.dataTransfer.getData('text/plain');
+    const card = document.querySelector(`.card[data-date='${date}']`);
+    card.querySelector('.date').style.display = 'block';
+    card.draggable = false;
+    
+    card.classList.add('flippable');
+    card.addEventListener('click', flipCard);
+
+    if (currentCardContainer.children.length === 0 && timeline.children.length === events.length) {
+        message.textContent = `Congratulations! You've placed all cards correctly.`;
+        gameOver();
+        nextCardButton.disabled = true;
+    } else {
+        if (currentCardContainer.children.length === 0) {
+            nextCardButton.disabled = false;
+        }
+    }
+    if (checkOrder()) {
+        card.classList.add('correct');
+        currentCardContainer.removeChild(card);
+    } else {
+        card.classList.add('incorrect');
+        gameOver();
+    }
+});
+
+function getDragAfterElement(container, x) {
+    const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = x - box.left - box.width / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function checkOrder() {
+    const timelineCards = Array.from(timeline.children);
+    for (let i = 0; i < timelineCards.length - 1; i++) {
+        const date1 = parseInt(timelineCards[i].dataset.date);
+        const date2 = parseInt(timelineCards[i + 1].dataset.date);
+        if (date1 > date2) {
+            return false;
+        }
+    }
+    currentStreak++;
+    if (currentStreak > longestStreak) {
+        longestStreak = currentStreak;
+    }
+    return true;
+}
+
+function gameOver() {
+    document.getElementById("current-card-container").style.display = "none";
+    document.getElementById("next-card-button").style.display = "none";
+    document.getElementById("game-rules-button").style.display = "none";
+    document.getElementById("play-again-button").style.display = "block";
+    
+    if (timeline.children.length === events.length && checkOrder()) {
+        document.getElementById("game-rules-tooltip").style.display = "none";
+        document.getElementById("timeline").style.display = "none";
+        message.textContent = `Congratulations! You've placed all cards correctly.`;
+    } else {
+        message.textContent = `Game Over! Longest streak: ${longestStreak}`;
+        document.getElementById("game-rules-tooltip").style.display = "none";
+        card.style.display="block"  
+        document.getElementById("timeline").style.display = "flex";
+        
+    }
+    timeline.innerHTML = '';
+    currentCardContainer.innerHTML = '';
+    nextCardButton.disabled = true;
+}
+
+function refreshPage() {
+    location.reload();
+}
+
+
+function flipCard(e) {
+    if (e.currentTarget.classList.contains('flippable')) {
+        e.currentTarget.classList.toggle('flipped');
+    }
+}
+
+initializeGame();
+
+
+function toggleGameRules() {
+    var container = document.querySelector('.game-rules-container');
+    var tooltip = document.getElementById('game-rules-tooltip');
+
+    if (!tooltip) {
+        fetch('game-rules.txt')
+            .then(response => response.text())
+            .then(data => {
+                var tooltipDiv = document.createElement('div');
+                tooltipDiv.id = 'game-rules-tooltip';
+                tooltipDiv.className = 'game-rules-tooltip';
+                tooltipDiv.innerHTML = `
+                    <h3>Game Rules</h3>
+                    <div id="rules-content">${data.replace(/\n/g, '<br>')}</div>
+                `;
+                container.appendChild(tooltipDiv);
+                tooltipDiv.style.display = 'block';
+            })
+            .catch(error => console.error('Error loading game rules:', error));
+    } else {
+        tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
+    }
+}
+
+    </script>
+</body>
+
+</html>
