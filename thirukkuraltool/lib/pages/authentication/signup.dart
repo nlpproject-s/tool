@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'splash_screen.dart'; // Make sure you import the Splash page
+import 'splash_screen.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -161,7 +161,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         final firstName = _firstNameController.text.trim();
                         final lastName = _lastNameController.text.trim();
 
-                        // Create user in Firebase Authentication
                         UserCredential userCredential =
                             await _auth.createUserWithEmailAndPassword(
                           email: email,
@@ -179,8 +178,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         //   'lastName': lastName,
                         //   'email': email,
                         // });
-
                         // Insert data into UserData collection
+
                         try {
                           await FirebaseFirestore.instance
                               .collection('User')
@@ -193,6 +192,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             'profileImageUrl': "",
                             'contributions': [],
                             'verifications': [],
+                            'discussions': []
                           });
                           print(
                               "Data successfully saved to 'User' collection for userId: $userId");

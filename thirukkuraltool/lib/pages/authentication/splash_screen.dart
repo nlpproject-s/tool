@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../globals.dart';
@@ -24,6 +25,8 @@ class _SplashScreenState extends State<SplashScreen> {
       if (user != null) {
         // User is logged in, fetch their data
         await _fetchUserData(user.uid);
+        await _fetchCategories();
+        await globalfetchCategoryResource(context);
 
         // Navigate to HomePage only if the widget is still mounted
         if (mounted) {
@@ -50,6 +53,32 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       }
     });
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('ContributionCategories')
+          .get();
+
+      List<QueryDocumentSnapshot> sortedDocs = snapshot.docs
+          .where((doc) => (doc['category'] ?? '').toString().contains('+'))
+          .toList();
+      sortedDocs.addAll(snapshot.docs
+          .where((doc) => !(doc['category'] ?? '').toString().contains('+'))
+          .toList());
+
+      globalcategories = sortedDocs;
+      globalisLoadingCategories = false;
+      globalselectedCategory = "Thirukkural";
+    } catch (e) {
+      setState(() {
+        globalisLoadingCategories = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch categories: $e')));
+    }
+    print("Fetched categories: ${globalcategories!.length}");
   }
 
   Future<void> _fetchUserData(String userId) async {
@@ -84,7 +113,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-            CircularProgressIndicator(),  // Loading spinner
+            CircularProgressIndicator(), // Loading spinner
           ],
         ),
       ),

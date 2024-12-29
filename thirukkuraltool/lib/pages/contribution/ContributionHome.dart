@@ -9,32 +9,9 @@ class ContributionsPage extends StatefulWidget {
 }
 
 class _ContributionsPageState extends State<ContributionsPage> {
-  String _selectedCategory = "Thirukkural"; // Default category
-  List<DocumentSnapshot> _categories = []; // Store fetched categories
-  bool _isLoadingCategories = true; // Loading state for categories
-
   @override
   void initState() {
     super.initState();
-    _fetchCategories();
-  }
-
-  Future<void> _fetchCategories() async {
-    try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('ContributionCategories')
-          .get();
-      setState(() {
-        _categories = snapshot.docs;
-        _isLoadingCategories = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoadingCategories = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to fetch categories: $e')));
-    }
   }
 
   @override
@@ -76,20 +53,19 @@ class _ContributionsPageState extends State<ContributionsPage> {
             ),
             SizedBox(height: height * 0.01),
 
-            // Literature Categories Section
             SizedBox(
               height: height * 0.15,
-              child: _isLoadingCategories
+              child: globalisLoadingCategories == true
                   ? Center(child: CircularProgressIndicator())
-                  : _categories.isEmpty
+                  : globalcategories!.isEmpty
                       ? Center(child: Text("No categories found"))
                       : ListView.builder(
                           scrollDirection: Axis.horizontal,
                           padding:
                               EdgeInsets.symmetric(horizontal: width * 0.05),
-                          itemCount: _categories.length,
+                          itemCount: globalcategories!.length,
                           itemBuilder: (context, index) {
-                            final categoryData = _categories[index];
+                            final categoryData = globalcategories![index];
                             final categoryName =
                                 categoryData['category'] ?? 'Unknown';
                             final imagePath =
@@ -133,7 +109,7 @@ class _ContributionsPageState extends State<ContributionsPage> {
             SizedBox(height: height * 0.02),
 
             Expanded(
-              child: ContributionCategory(_selectedCategory),
+              child: ContributionCategory(),
             ),
           ],
         ),
@@ -147,8 +123,10 @@ class _ContributionsPageState extends State<ContributionsPage> {
         if (title == "+") {
           _showCreateCategory(context);
         } else {
+          globalselectedCategory = title;
+          setupCategoryListener(context);
           setState(() {
-            _selectedCategory = title;
+            globalselectedCategory = title;
           });
         }
       },
@@ -197,7 +175,6 @@ class _ContributionsPageState extends State<ContributionsPage> {
 void _showCreateCategory(BuildContext context) {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
-
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -217,31 +194,87 @@ void _showCreateCategory(BuildContext context) {
           ],
         ),
         actions: [
-          // Cancel Button
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
-            child: Text('Cancel'),
-          ),
-
-          // Create Button
           TextButton(
             onPressed: () async {
-              final title = titleController.text;
-              final description = descriptionController.text;
+              final title = titleController.text.trim();
+              final description = descriptionController.text.trim();
 
               if (title.isNotEmpty && description.isNotEmpty) {
-                await FirebaseFirestore.instance
-                    .collection('ContributionCategories')
-                    .add({
-                  'category': title,
-                  'description': description,
-                  'createdAt': Timestamp.now(),
-                  'createdBy': globalUserId,
-                });
+                try {
+                  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                      .collection('ContributionCategories')
+                      .where('category', isEqualTo: title)
+                      .get();
 
-                Navigator.of(context).pop();
+                  if (querySnapshot.docs.isNotEmpty) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Category Exists'),
+                          content: Text(
+                              'The category "$title" already exists. What would you like to do?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                // Cancel button action
+                                Navigator.of(context).pop();
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Find button action
+                                globalselectedCategory = title;
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Category "$title" has been selected'),
+                                  ),
+                                );
+                              },
+                              child: Text('Find'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    DocumentReference newCategoryRef = await FirebaseFirestore
+                        .instance
+                        .collection('ContributionCategories')
+                        .add({
+                      'category': title,
+                      'description': description,
+                      'createdAt': Timestamp.now(),
+                      'createdBy': globalUserId,
+                    });
+
+                    await FirebaseFirestore.instance
+                        .collection('ResourcesPublished')
+                        .doc(title)
+                        .collection('entries')
+                        .add({
+                      'categoryId': newCategoryRef.id,
+                      'description': description,
+                      'createdAt': Timestamp.now(),
+                      'createdBy': globalUserId,
+                    });
+                    Navigator.of(context).pop();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              'Category and subcollection created successfully')),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error creating category: $e')),
+                  );
+                }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Please fill in all fields')),
@@ -249,6 +282,12 @@ void _showCreateCategory(BuildContext context) {
               }
             },
             child: Text('Create'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cancel'),
           ),
         ],
       );

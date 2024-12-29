@@ -3,130 +3,215 @@ import 'package:flutter/material.dart';
 import 'package:thirukkuraltool/globals.dart';
 
 class ContributionCategory extends StatefulWidget {
-  final String category;
-
-  ContributionCategory(this.category);
+  ContributionCategory();
 
   @override
   _ContributionCategoryState createState() => _ContributionCategoryState();
 }
 
 class _ContributionCategoryState extends State<ContributionCategory> {
-  List<DocumentSnapshot> _resources = [];
-  bool _isLoading = true;
+  // List<DocumentSnapshot> _resources = [];
+  // bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadResources();
+
+    // _loadResources();
   }
 
-  Future<void> _loadResources() async {
-    try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('ResourcePublished')
-          .where('category', isEqualTo: widget.category)
-          .limit(50)
-          .get();
+  // Future<void> _loadResources() async {
+  //   try {
+  //     QuerySnapshot snapshot = await FirebaseFirestore.instance
+  //         .collection('ResourcePublished')
+  //         .where('category', isEqualTo: widget.category)
+  //         .limit(50)
+  //         .get();
 
-      setState(() {
-        _resources = snapshot.docs;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load resources: $e')),
-      );
-    }
-  }
+  //     setState(() {
+  //       _resources = snapshot.docs;
+  //       _isLoading = false;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Failed to load resources: $e')),
+  //     );
+  //   }
+  // }
 
-  void _addNewDiscussion() {
+  void _addNewContribution() {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     final TextEditingController literatureController = TextEditingController();
+    final TextEditingController literaturemeaningController =
+        TextEditingController();
+    final List<Map<String, String>> wordMeanings = [];
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('Create New Discussion'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(labelText: 'Title'),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final TextEditingController wordController =
+                TextEditingController();
+            final TextEditingController meaningController =
+                TextEditingController();
+
+            return AlertDialog(
+              title: Text('Contribute to ${globalselectedCategory}'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration: InputDecoration(labelText: 'Title'),
+                    ),
+                    TextField(
+                      controller: descriptionController,
+                      decoration: InputDecoration(labelText: 'Description'),
+                    ),
+                    TextField(
+                      controller: literatureController,
+                      decoration:
+                          InputDecoration(labelText: 'Literature Content'),
+                    ),
+                    TextField(
+                      controller: literatureController,
+                      decoration: InputDecoration(labelText: 'Content Meaning'),
+                    ),
+                    SizedBox(height: 10),
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Add Word Meaning'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    controller: wordController,
+                                    decoration:
+                                        InputDecoration(labelText: 'Word'),
+                                  ),
+                                  TextField(
+                                    controller: meaningController,
+                                    decoration:
+                                        InputDecoration(labelText: 'Meaning'),
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    String word = wordController.text.trim();
+                                    String meaning =
+                                        meaningController.text.trim();
+                                    if (word.isNotEmpty && meaning.isNotEmpty) {
+                                      setState(() {
+                                        wordMeanings.add(
+                                            {'word': word, 'meaning': meaning});
+                                      });
+                                      wordController.clear();
+                                      meaningController.clear();
+                                      Navigator.pop(context);
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Both fields are required')),
+                                      );
+                                    }
+                                  },
+                                  child: Text('Add'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: Text('Add Word Meaning'),
+                    ),
+                    Text(
+                      'Word Meanings:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    for (var wm in wordMeanings)
+                      ListTile(
+                        title: Text(wm['word']!),
+                        subtitle: Text(wm['meaning']!),
+                      ),
+                  ],
                 ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(labelText: 'Description'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    String title = titleController.text.trim();
+                    String description = descriptionController.text.trim();
+                    String literature = literatureController.text.trim();
+                    String meaning = literaturemeaningController.text.trim();
+                    if (title.isNotEmpty &&
+                        description.isNotEmpty &&
+                        literature.isNotEmpty) {
+                      DocumentSnapshot userDoc = await FirebaseFirestore
+                          .instance
+                          .collection('User')
+                          .doc(globalUserId)
+                          .get();
+                      String creatorName = userDoc['name'] ?? 'Unknown';
+                      await FirebaseFirestore.instance
+                          .collection('ResourcesPublished')
+                          .doc(globalselectedCategory)
+                          .collection('entries')
+                          .add({
+                        'createdAt': FieldValue.serverTimestamp(),
+                        'createdBy': globalUserId,
+                        'creator': creatorName,
+                        'title': title,
+                        'description': description,
+                        'favouritesCount': 0,
+                        'likesCount': 0,
+                        'literature': literature,
+                        'meaning': meaning,
+                        'wordMeanings': wordMeanings,
+                      });
+                      Navigator.pop(context);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                'Your Contribution has been published successfully')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('All fields are required')),
+                      );
+                    }
+                  },
+                  child: Text('Submit'),
                 ),
-                TextField(
-                  controller: literatureController,
-                  decoration: InputDecoration(labelText: 'Literature'),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancel'),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                String title = titleController.text.trim();
-                String description = descriptionController.text.trim();
-                String literature = literatureController.text.trim();
-
-                if (title.isNotEmpty &&
-                    description.isNotEmpty &&
-                    literature.isNotEmpty) {
-                  // Get current user information
-                  DocumentSnapshot userDoc = await FirebaseFirestore.instance
-                      .collection('User')
-                      .doc(
-                          globalUserId) // Replace globalUserId with your actual user ID
-                      .get();
-
-                  String creatorName = userDoc['name'] ?? 'Unknown';
-
-                  // Add to Firestore
-                  await FirebaseFirestore.instance
-                      .collection('Discussion')
-                      .add({
-                    'createdAt': FieldValue.serverTimestamp(),
-                    'createdBy': globalUserId, // Replace with actual user ID
-                    'creator': creatorName,
-                    'description': description,
-                    'favouritesCount': 0,
-                    'likesCount': 0,
-                    'literature': literature.toLowerCase(),
-                    'tags': [],
-                    'title': title,
-                  });
-
-                  // Close the dialog
-                  Navigator.pop(context);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Discussion created successfully')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('All fields are required')),
-                  );
-                }
-              },
-              child: Text('Submit'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -136,32 +221,55 @@ class _ContributionCategoryState extends State<ContributionCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Category: ${widget.category}'),
+        title: Text('Category: ${globalselectedCategory}'),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _resources.isEmpty
-              ? Center(child: Text('No resources found for ${widget.category}'))
-              : ListView.builder(
-                  itemCount: _resources.length,
-                  itemBuilder: (context, index) {
-                    final resource = _resources[index];
-                    final title = resource['title'] ?? 'No Title';
-                    final description =
-                        resource['description'] ?? 'No Description';
+      body: (globalcategoryResource == null || globalcategoryResource!.isEmpty)
+          ? Center(
+              child: Text(
+                'No resources found for $globalselectedCategory',
+                style: TextStyle(fontSize: 16),
+              ),
+            )
+          : ListView.builder(
+              itemCount: globalcategoryResource!.length,
+              itemBuilder: (context, index) {
+                final resource = globalcategoryResource![index].data()
+                        as Map<String, dynamic>? ??
+                    {};
+                final title = resource['title'] ?? 'No Title';
+                final description = resource['description'] ?? 'No Description';
 
-                    return ListTile(
-                      title: Text(title),
-                      subtitle: Text(description),
-                      trailing: Icon(Icons.arrow_forward),
-                      onTap: () {
-                        // Add functionality for tapping a resource
-                      },
-                    );
-                  },
-                ),
+                return Card(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 4,
+                  child: ListTile(
+                    title: Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        description,
+                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                      ),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      print('Tapped on $title');
+                    },
+                  ),
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addNewDiscussion,
+        onPressed: _addNewContribution,
         backgroundColor: Colors.orange,
         child: const Icon(Icons.add, color: Colors.white),
       ),
