@@ -119,15 +119,11 @@ class _ContributionsPageState extends State<ContributionsPage> {
 
   Widget _literatureCard(String title, String assetPath) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (title == "+") {
           _showCreateCategory(context);
         } else {
-          globalselectedCategory = title;
-          setupCategoryListener(context);
-          setState(() {
-            globalselectedCategory = title;
-          });
+          globalselectedCategoryNotifier.value = title;
         }
       },
       child: Padding(
@@ -225,7 +221,7 @@ void _showCreateCategory(BuildContext context) {
                             TextButton(
                               onPressed: () {
                                 // Find button action
-                                globalselectedCategory = title;
+                                globalselectedCategoryNotifier.value = title;
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                                 ScaffoldMessenger.of(context).showSnackBar(

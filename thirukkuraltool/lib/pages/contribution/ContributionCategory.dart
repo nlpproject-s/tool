@@ -61,7 +61,8 @@ class _ContributionCategoryState extends State<ContributionCategory> {
                 TextEditingController();
 
             return AlertDialog(
-              title: Text('Contribute to ${globalselectedCategory}'),
+              title:
+                  Text('Contribute to ${globalselectedCategoryNotifier.value}'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -174,7 +175,7 @@ class _ContributionCategoryState extends State<ContributionCategory> {
                       String creatorName = userDoc['name'] ?? 'Unknown';
                       await FirebaseFirestore.instance
                           .collection('ResourcesPublished')
-                          .doc(globalselectedCategory)
+                          .doc(globalselectedCategoryNotifier.value)
                           .collection('entries')
                           .add({
                         'createdAt': FieldValue.serverTimestamp(),
@@ -221,12 +222,12 @@ class _ContributionCategoryState extends State<ContributionCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Category: ${globalselectedCategory}'),
+        title: Text('Category: ${globalselectedCategoryNotifier.value}'),
       ),
       body: (globalcategoryResource == null || globalcategoryResource!.isEmpty)
           ? Center(
               child: Text(
-                'No resources found for $globalselectedCategory',
+                'No resources found for $globalselectedCategoryNotifier.value',
                 style: TextStyle(fontSize: 16),
               ),
             )

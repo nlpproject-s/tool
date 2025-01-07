@@ -1,29 +1,27 @@
-library globals;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 String? globalUserId;
 String? globalUsername;
-String? globalselectedCategory;
 ValueNotifier<String?> globalselectedCategoryNotifier =
     ValueNotifier<String?>(null);
 List<DocumentSnapshot>? globalcategories = [];
 List<DocumentSnapshot>? globalcategoryResource = [];
 bool? globalisLoadingCategories = true;
 
-Future<void> globalfetchCategoryResource(BuildContext context) async {
+Future<void> globalfetchCategoryResource(BuildContext context, String s) async {
   try {
-    if (globalselectedCategory != null && globalselectedCategory!.isNotEmpty) {
+    if (globalselectedCategoryNotifier.value != null &&
+        globalselectedCategoryNotifier.value!.isNotEmpty) {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('ResourcesPublished')
-          .doc(globalselectedCategory)
+          .doc(globalselectedCategoryNotifier.value)
           .collection('entries')
           .get();
 
       globalcategoryResource = snapshot.docs;
       print(
-          'Fetched ${globalselectedCategory} ${globalcategoryResource!.length}');
+          'Fetched ${globalselectedCategoryNotifier.value} ${globalcategoryResource!.length}');
     } else {
       throw Exception('No category selected');
     }
@@ -36,6 +34,8 @@ Future<void> globalfetchCategoryResource(BuildContext context) async {
 }
 
 void setupCategoryListener(BuildContext context) {
-  print('called');
-  globalfetchCategoryResource(context);
+  globalselectedCategoryNotifier.addListener(() async {
+    await globalfetchCategoryResource(
+        context, globalselectedCategoryNotifier.value ?? '');
+  });
 }

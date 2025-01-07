@@ -26,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
         // User is logged in, fetch their data
         await _fetchUserData(user.uid);
         await _fetchCategories();
-        await globalfetchCategoryResource(context);
+        await globalfetchCategoryResource(
+            context, globalselectedCategoryNotifier.value!);
 
         // Navigate to HomePage only if the widget is still mounted
         if (mounted) {
@@ -70,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       globalcategories = sortedDocs;
       globalisLoadingCategories = false;
-      globalselectedCategory = "Thirukkural";
+      globalselectedCategoryNotifier.value = "Thirukkural";
     } catch (e) {
       setState(() {
         globalisLoadingCategories = false;
